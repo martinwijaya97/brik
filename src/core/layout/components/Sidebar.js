@@ -3,17 +3,22 @@ import * as React from 'react';
 import { useHistory, useLocation } from 'react-router';
 
 import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Theme from '../../theme';
+import { Typography } from '@mui/material';
+import { isMobileDevice } from '../../utils';
 
 const useStyles = () => {
   const theme = Theme();
   const styles = {
     wrapListItem: {
-      padding: 5,
-      backgroundColor: 'red',
+      paddingX: 6,
+      paddingY: 2,
+      borderBottom: 1,
+      borderColor: theme.colors.greyScale3,
     },
     textListItemActive: {
       color: theme.colors.textQuaternary,
@@ -27,10 +32,10 @@ const useStyles = () => {
 };
 
 const Sidebar = ({ open, handleClose }) => {
-  const theme = Theme();
   const styles = useStyles();
   const location = useLocation();
   const history = useHistory();
+  const isMobile = isMobileDevice();
 
   const renderListItem = ({ title, path }) => {
     const isActive = location.pathname === path;
@@ -39,21 +44,12 @@ const Sidebar = ({ open, handleClose }) => {
       : styles.textListItemStandBy;
 
     return (
-      <ListItem
-        button
-        sx={{
-          paddingX: 6,
-          paddingY: 2,
-          borderBottom: 1,
-          borderColor: theme.colors.greyScale3,
-        }}
-      >
+      <ListItem button sx={styles.wrapListItem}>
         <ListItemText
-          sx={styleText}
           onClick={() => {
             history.push(path);
           }}
-          primary={title}
+          primary={<Typography sx={styleText}>{title}</Typography>}
         />
       </ListItem>
     );
@@ -65,11 +61,15 @@ const Sidebar = ({ open, handleClose }) => {
     );
   };
 
-  return (
-    <Drawer anchor={'left'} open={true} onClose={handleClose}>
-      {renderList()}
-    </Drawer>
-  );
+  if (isMobile) {
+    return (
+      <Drawer anchor={'left'} open={open} onClose={handleClose}>
+        {renderList()}
+      </Drawer>
+    );
+  } else {
+    return <Box>{renderList()}</Box>;
+  }
 };
 
 export default Sidebar;

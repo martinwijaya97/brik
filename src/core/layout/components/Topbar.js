@@ -1,48 +1,75 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
 
-const Topbar = () => {
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+
+import MenuIcon from '@mui/icons-material/Menu';
+
+import Theme from '../../theme';
+
+import isMobileDevice from '../../utils/isMobileDevice';
+
+const useStyles = () => {
+  const theme = Theme();
   const styles = {
-    typography1: {
+    root: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.header,
+    },
+    container: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    textTitle: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      textAlign: 'center',
       fontWeight: 'bold',
-      fontSize: '26px',
-      color: 'white',
-      marginBottom: 10,
+      fontSize: theme.fontSize[24],
+      color: theme.colors.textSecondary,
     },
-    buttonMenuItem: {
-      fontSize: '12px',
-      color: 'black',
-    },
-    verticalDivider: {
-      height: 20,
-      width: 0,
-      marginLeft: 10,
-      marginRight: 10,
-      border: '1px solid rgba(0, 0, 0, 0.13',
+    iconMenu: {
+      marginLeft: 2,
+      color: theme.colors.textSecondary,
     },
   };
 
+  return styles;
+};
+
+const Topbar = ({ handleOpenSidebar }) => {
+  const styles = useStyles();
+  const isMobile = isMobileDevice();
+
+  const renderMenuIcon = () => {
+    if (isMobile) {
+      return (
+        <IconButton sx={styles.iconMenu} onClick={handleOpenSidebar}>
+          <MenuIcon />
+        </IconButton>
+      );
+    }
+  };
+
   return (
-    <div
-      style={{
-        height: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        backgroundColor: 'RED',
-      }}
-    >
-      {/* <img
-        style={{ width: 'auto', height: 150 }}
-        src='/images/teakdepotnew.png'
-        alt='logo'
-      /> */}
-      <Typography style={styles.typography1}>Teakdepot</Typography>
-    </div>
+    <Box div sx={styles.root}>
+      <Grid container sx={styles.container}>
+        <Grid item xs>
+          {renderMenuIcon()}
+        </Grid>
+        <Grid item xs={6}>
+          <Typography sx={styles.textTitle}>Brik</Typography>
+        </Grid>
+        <Grid item xs />
+      </Grid>
+    </Box>
   );
 };
 

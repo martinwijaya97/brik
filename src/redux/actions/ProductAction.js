@@ -1,4 +1,3 @@
-import axios from 'axios';
 import config from '../../config';
 
 function setData({ data, type }) {
@@ -8,100 +7,54 @@ function setData({ data, type }) {
   };
 }
 
-function getProducts({ page = 0, pageSize = 10, filter = {} }) {
+function getProducts() {
   return async (dispatch) => {
     try {
-      const result = await axios({
-        method: 'POST',
-        url: `${config.getUrlMasterData()}/product/list`,
-        data: {
-          page,
-          pageSize,
-          filter,
-        },
-      });
-
-      if (result?.data?.data) {
-        dispatch(setData({ data: result.data.data, type: 'SET_PRODUCT' }));
-        return result.data.data;
+      const response = await config.get().then(({ data }) => data);
+      if (response) {
+        dispatch(setData({ data: response, type: 'SET_PRODUCT' }));
+        return response;
       }
+      console.log('MARTING GILA', response);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 }
 
-function getProductsByCategory({
-  page = 0,
-  pageSize = 10,
+function createProduct({
   categoryId,
-  collectionId,
-  isDisplayProduct,
+  categoryName,
+  sku,
+  name,
+  description,
+  weight,
+  width,
+  length,
+  height,
+  price,
+  image,
 }) {
   return async (dispatch) => {
     try {
-      const result = await axios({
-        method: 'POST',
-        url: `${config.getUrlMasterData()}/product/list`,
-        data: {
-          page,
-          pageSize,
-          filter: { categoryId, collectionId, isDisplayProduct },
-        },
-      });
+      const payload = {
+        categoryId,
+        categoryName,
+        sku,
+        name,
+        description,
+        weight,
+        width,
+        length,
+        height,
+        price,
+        image,
+      };
 
-      if (result?.data?.data) {
-        await dispatch(
-          setData({ data: result.data.data, type: 'SET_PRODUCT_BY_CATEGORY' })
-        );
-        return result.data.data;
-      }
-      return result.data.data;
+      const response = await config.post('/', payload).then(({ data }) => data);
+      console.log(response);
     } catch (error) {
-      // console.log(error);
-    }
-  };
-}
-
-function getProductsDisplay({ page = 0, pageSize = 10, filter }) {
-  return async (dispatch) => {
-    try {
-      const result = await axios({
-        method: 'POST',
-        url: `${config.getUrlMasterData()}/product/list`,
-        data: {
-          page,
-          pageSize,
-          filter,
-        },
-      });
-
-      if (result?.data?.data) {
-        dispatch(
-          setData({ data: result.data.data, type: 'SET_PRODUCT_DISPLAY' })
-        );
-        return result.data.data;
-      }
-    } catch (error) {
-      // console.log(error);
-    }
-  };
-}
-
-function getProductDetail({ id }) {
-  return async (dispatch) => {
-    try {
-      const result = await axios({
-        method: 'POST',
-        url: `${config.getUrlMasterData()}/product/${id}/detail`,
-      });
-
-      if (result?.data?.data) {
-        dispatch(setData({ data: result.data.data, type: 'SET_PRODUCT' }));
-        return result.data.data;
-      }
-    } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 }
@@ -109,7 +62,5 @@ function getProductDetail({ id }) {
 export const ProductAction = {
   setData,
   getProducts,
-  getProductDetail,
-  getProductsByCategory,
-  getProductsDisplay,
+  createProduct,
 };

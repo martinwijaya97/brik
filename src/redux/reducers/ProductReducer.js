@@ -8,7 +8,7 @@ export default function reducer(state = defaultState, action) {
     case 'SET_PRODUCT':
       return {
         ...state,
-        products: action.data.products,
+        products: action.data,
       };
     case 'SET_PRODUCT_BY_CATEGORY':
       return {

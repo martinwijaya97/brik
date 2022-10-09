@@ -1,17 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+// export {default as colors} from './colors';
+// export {default as fonts} from './fonts';
 
-import palette from './Palette';
-import typography from './Typography';
-import overrides from './overrides';
-
-const theme = createTheme({
-  palette,
-  typography,
-  overrides,
-  zIndex: {
-    appBar: 1200,
-    drawer: 1100,
-  },
-});
-
-export default theme;
+export {default} from './Theme';

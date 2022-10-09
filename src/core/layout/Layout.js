@@ -1,45 +1,83 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Topbar from './components/Topbar';
-import NewSideBar from './components/NewSideBar';
+import Sidebar from './components/Sidebar';
+import { Box } from '@mui/material';
+import { deviceSize } from '../utils';
 
-const useWindowSize = () => {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-  return size;
+const useStyles = () => {
+  const { height } = deviceSize();
+  const styles = {
+    root: {
+      height: '100%',
+      width: '100%',
+      flex: 1,
+      position: 'fixed',
+    },
+    header: {
+      height: height * 0.1,
+    },
+    body: {
+      height: height * 0.9,
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+    },
+    wrapFeature: {
+      width: '100%',
+      padding: 2,
+      overflowY: 'scroll',
+    },
+  };
+  return styles;
 };
 
 const Main = ({ children }) => {
-  const { height, width } = useWindowSize();
+  const styles = useStyles();
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
+
+  const handleOpenSidebar = () => {
+    setIsOpenSidebar(true);
+  };
+
+  const handleCloseSidebar = () => {
+    setIsOpenSidebar(false);
+  };
+
+  const renderHeader = () => {
+    return (
+      <Box div sx={styles.header}>
+        <Topbar handleOpenSidebar={handleOpenSidebar} />
+      </Box>
+    );
+  };
+
+  const renderSidebar = () => {
+    return <Sidebar open={isOpenSidebar} handleClose={handleCloseSidebar} />;
+  };
+
+  const renderFeature = () => {
+    return (
+      <Box main sx={styles.wrapFeature}>
+        {children}
+      </Box>
+    );
+  };
+
+  const renderBody = () => {
+    return (
+      <Box style={styles.body}>
+        {renderSidebar()}
+        {renderFeature()}
+      </Box>
+    );
+  };
+
   return (
-    <div
-      style={{
-        height: height,
-        width: width,
-        position: 'fixed',
-      }}
-    >
-      <Topbar />
-      <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
-        <NewSideBar />
-        <main
-          style={{
-            width: '100%',
-            height: 'auto',
-            overflowY: 'scroll',
-          }}
-        >
-          {children}
-        </main>
-      </div>
-    </div>
+    <Box div sx={styles.root}>
+      {renderHeader()}
+      {renderBody()}
+    </Box>
   );
 };
 
