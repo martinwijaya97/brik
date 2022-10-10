@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { useHistory, useLocation } from 'react-router';
 
@@ -14,6 +14,10 @@ import { isMobileDevice } from '../../utils';
 const useStyles = () => {
   const theme = Theme();
   const styles = {
+    root: {
+      borderRight: 1,
+      borderColor: theme.colors.brandPrimary,
+    },
     wrapListItem: {
       paddingX: 6,
       paddingY: 2,
@@ -22,9 +26,11 @@ const useStyles = () => {
     },
     textListItemActive: {
       color: theme.colors.textQuaternary,
+      fontSize: theme.fontSize[14],
     },
     textListItemStandBy: {
       color: theme.colors.textPrimary,
+      fontSize: theme.fontSize[14],
     },
   };
 
@@ -38,7 +44,8 @@ const Sidebar = ({ open, handleClose }) => {
   const isMobile = isMobileDevice();
 
   const renderListItem = ({ title, path }) => {
-    const isActive = location.pathname === path;
+    const isActive = location.pathname.includes(path);
+
     const styleText = isActive
       ? styles.textListItemActive
       : styles.textListItemStandBy;
@@ -68,7 +75,7 @@ const Sidebar = ({ open, handleClose }) => {
       </Drawer>
     );
   } else {
-    return <Box>{renderList()}</Box>;
+    return <Box sx={styles.root}>{renderList()}</Box>;
   }
 };
 

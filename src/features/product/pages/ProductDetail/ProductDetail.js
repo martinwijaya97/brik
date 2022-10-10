@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link as LinkRouter } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Box from '@mui/material/Box';
@@ -11,6 +12,18 @@ import { ProductAction } from '../../../../redux/actions/ProductAction';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const loadData = async () => {
+      const response = await dispatch(ProductAction.getProductDetail({ id }));
+      if (!!response) {
+        setProduct(response);
+      }
+    };
+    loadData();
+  }, [id, dispatch]);
 
   const renderBreadcrumbs = () => {
     return (
@@ -43,24 +56,9 @@ const ProductDetail = () => {
       <Box sx={{ flex: 1, marginTop: 2 }}>
         <FeatureDetail
           title='Product Detail'
-          row={{
-            id: 86,
-            categoryId: 14,
-            categoryName: 'Cemilan',
-            sku: 'MHZVTK',
-            name: 'Ciki ciki',
-            description:
-              'Ciki ciki yang super enak, hanya di toko klontong kami',
-            weight: 500,
-            width: 5,
-            length: 5,
-            height: 5,
-            image:
-              'https://cf.shopee.co.id/file/7cb930d1bd183a435f4fb3e5cc4a896b',
-            price: 30000,
-          }}
+          row={product}
           headers={[
-            { displayName: 'ID', key: 'id' },
+            { displayName: 'ID', key: '_id' },
             { displayName: 'SKU', key: 'sku' },
             { displayName: 'Name', key: 'name' },
             { displayName: 'Price', key: 'price' },

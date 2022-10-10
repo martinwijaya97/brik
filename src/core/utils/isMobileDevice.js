@@ -1,29 +1,19 @@
-// const IsMobileDevice = () => {
-//   const details = navigator.userAgent;
-
-//   const regexp = /android|iphone|kindle|ipad/i;
-
-//   const isMobileDevice = regexp.test(details);
-
-//   return isMobileDevice;
-// };
-
-// export default IsMobileDevice;
-
 import { useState, useLayoutEffect } from 'react';
 
 const IsMobileDevice = () => {
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [size, setSize] = useState(0);
+
   useLayoutEffect(() => {
-    function updateSize() {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
+    function update() {
+      setSize(window.innerWidth);
     }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
+
+    window.addEventListener('resize', update);
+    update();
+    return () => window.removeEventListener('resize', update);
   }, []);
 
-  if (size.width > 600) {
+  if (size > 600) {
     return false;
   } else {
     return true;

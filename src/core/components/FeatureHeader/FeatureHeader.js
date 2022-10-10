@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Box } from '@mui/material';
+import React from 'react';
+import Box from '@mui/material/Box';
 import { isMobileDevice } from '../../utils';
 
 const useStyles = () => {
@@ -30,13 +30,8 @@ const useStyles = () => {
 
 const FeatureHeader = ({ left, right }) => {
   const styles = useStyles();
-  const isMobile = isMobileDevice() ? true : false;
+  const isMobile = isMobileDevice();
 
-  console.log('M<ATEP', navigator.userAgent);
-
-  useEffect(() => {
-    console.log('GILA');
-  }, [isMobile]);
   const rootStyles = isMobile ? styles.rootMobile : styles.root;
 
   return (

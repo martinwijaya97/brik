@@ -1,12 +1,7 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import React from 'react';
 import { List as ReactContentLoaderList } from 'react-content-loader';
 import LoadingOverlay from 'react-loading-overlay';
-import { Link } from 'react-router-dom';
 
-import Drawer from '@mui/material/Drawer';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -23,44 +18,37 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 
 import DateTime from '../../utils/dateFormatter';
 import Rupiahize from '../../utils/rupiahize';
+import Theme from '../../theme';
 
-const useStyles = makeStyles(() => ({
-  root: { width: '100%' },
-  content: {
-    padding: 0,
-  },
-  inner: {
-    minWidth: 'auto',
-    overflow: 'auto',
-  },
-  nameContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  avatar: {
-    marginRight: 2,
-  },
-  actions: {
-    justifyContent: 'flex-end',
-  },
-  actionButton: {
-    width: 90,
-    margin: 1,
-  },
-  cardActions: {
-    justifyContent: 'flex-end',
-  },
-  imgStyle: {
-    objectFit: 'contain',
-    display: 'block',
-    width: 200,
-    height: 200,
-  },
-  table: {
-    border: 0,
-    overflowX: 'auto',
-  },
-}));
+const useStyles = () => {
+  const theme = Theme();
+  const styles = {
+    root: {
+      border: 1,
+      borderColor: theme.colors.brandPrimary,
+    },
+    content: {
+      padding: 0,
+      overflowX: 'auto',
+    },
+    header: {
+      backgroundColor: theme.colors.brandPrimary,
+      paddingRight: 28,
+      color: theme.colors.textSecondary,
+    },
+    cardActions: {
+      justifyContent: 'flex-end',
+    },
+    imgStyle: {
+      objectFit: 'contain',
+      display: 'block',
+      width: 200,
+      height: 200,
+    },
+  };
+
+  return styles;
+};
 
 const FeatureTable = (props) => {
   const {
@@ -83,14 +71,14 @@ const FeatureTable = (props) => {
     disableSorting,
   } = props;
 
-  const classes = useStyles();
+  const styles = useStyles();
 
   const renderDisplayDataRupiah = (data) => {
     return Rupiahize(data);
   };
 
   const renderDisplayDataImage = (data) => {
-    return <img className={classes.imgStyle} src={data} alt={data} />;
+    return <img style={styles.imgStyle} src={data} alt={data} />;
   };
   const renderDisplayDataDate = (data) => {
     return DateTime(data);
@@ -126,7 +114,7 @@ const FeatureTable = (props) => {
 
   const handleTableBodyRowOnClick = ({ event, row, index }) => {
     if (
-      !!event.target.value !== true &&
+      event.target.value !== true &&
       event.target.getAttribute('name') === 'childCell'
     ) {
       rowOnClick && rowOnClick(row, index, event);
@@ -135,12 +123,7 @@ const FeatureTable = (props) => {
 
   const renderTableTitle = () => {
     if (title) {
-      return (
-        <CardHeader
-          style={{ backgroundColor: 'rgb(248, 248, 248)', paddingRight: 28 }}
-          title={title}
-        />
-      );
+      return <CardHeader style={styles.header} title={title} />;
     }
   };
 
@@ -149,7 +132,6 @@ const FeatureTable = (props) => {
       return (
         <TableSortLabel
           active={sortByColumnName === header.key}
-          // direction={sortByDirection.toLowerCase()}
           onClick={() =>
             sortFunction(header.key, sortByDirection === 'ASC' ? 'DESC' : 'ASC')
           }
@@ -176,7 +158,7 @@ const FeatureTable = (props) => {
     });
 
     return (
-      <TableHead style={{ backgroundColor: 'black' }}>
+      <TableHead>
         <TableRow>{renderValues}</TableRow>
       </TableHead>
     );
@@ -200,7 +182,6 @@ const FeatureTable = (props) => {
     return (
       <TableRow
         style={{ cursor: 'pointer' }}
-        className={classes.tableRow}
         hover
         name='childCell'
         key={index}
@@ -214,18 +195,17 @@ const FeatureTable = (props) => {
   };
 
   const renderTableBody = () => {
-    const renderValues = rows.map((row, index) => {
+    const renderValues = rows?.map((row, index) => {
       return renderTableBodyValue(row, index);
     });
 
-    return <TableBody sx={{ overflowX: 'auto' }}>{renderValues}</TableBody>;
+    return <TableBody>{renderValues}</TableBody>;
   };
 
   const renderTableFooter = () => {
-    console.log('GILA', rowsPerPage, tablePagination);
     if (!!rowsPerPage && !!tablePagination) {
       return (
-        <CardActions className={classes.cardActions}>
+        <CardActions sx={styles.cardActions}>
           <TablePagination
             component='div'
             count={totalItems}
@@ -242,8 +222,8 @@ const FeatureTable = (props) => {
 
   if (isLoading && rows && rows.length === 0) {
     return (
-      <Card className={classes.root}>
-        <CardContent className={classes.content}>
+      <Card sx={styles.root}>
+        <CardContent>
           <ReactContentLoaderList />
         </CardContent>
       </Card>
@@ -251,10 +231,10 @@ const FeatureTable = (props) => {
   }
 
   return (
-    <Card className={classes.root}>
+    <Card sx={styles.root}>
       {renderTableTitle()}
       <Divider />
-      <CardContent style={{ padding: 0, overflowX: 'auto' }}>
+      <CardContent style={styles.content}>
         <LoadingOverlay active={isLoading} spinner text='Loading...'>
           <Table stickyHeader>
             {renderTableHeader()}
@@ -262,6 +242,7 @@ const FeatureTable = (props) => {
           </Table>
         </LoadingOverlay>
       </CardContent>
+      <Divider />
       {renderTableFooter()}
     </Card>
   );
