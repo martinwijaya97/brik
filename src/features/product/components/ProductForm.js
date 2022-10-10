@@ -260,8 +260,6 @@ const ProductForm = () => {
           });
 
           const image = await checkImage(values.image);
-          console.log('image', image);
-
           const variables = {
             ...values,
             image,
