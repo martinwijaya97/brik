@@ -248,7 +248,7 @@ const ProductForm = () => {
           weight: get(productFormData, 'weight', ''),
           length: get(productFormData, 'length', ''),
           height: get(productFormData, 'height', ''),
-          category: get(productFormData, 'category', {}),
+          category: get(productFormData, 'category', ''),
           image: get(productFormData, 'image', ''),
         }}
         validateOnChange
