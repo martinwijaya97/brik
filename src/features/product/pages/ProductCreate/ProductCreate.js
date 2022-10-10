@@ -2,7 +2,7 @@ import React from 'react';
 import ProductForm from '../../components/ProductForm';
 
 const ProductCreate = () => {
-  return <ProductForm isCreate />;
+  return <ProductForm />;
 };
 
 export default ProductCreate;

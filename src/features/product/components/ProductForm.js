@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FastField, Field } from 'formik';
+import get from 'lodash/get';
 import * as Yup from 'yup';
 import { Link as LinkRouter, useHistory } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
@@ -66,15 +67,10 @@ const ProductForm = () => {
   const history = useHistory();
   const styles = useStyles();
   const [isLoading, setIsLoading] = useState(false);
+  const productFormData =
+    JSON.parse(window.localStorage.getItem('productForm')) || {};
 
-  const loadCategoryOptions = async (searchQuery) => {
-    // const response = await dispatch(
-    //   CategoryAction.categoryList({
-    //     search: searchQuery,
-    //     filter: { isParent: false },
-    //   })
-    // );
-
+  const loadCategoryOptions = async () => {
     const response = [
       { id: 1, name: 'makanan' },
       { id: 2, name: 'minuman' },
@@ -97,6 +93,7 @@ const ProductForm = () => {
     );
 
     if (result) {
+      window.localStorage.setItem('productForm', JSON.stringify({}));
       history.push('/products');
     }
   };
@@ -146,7 +143,13 @@ const ProductForm = () => {
     );
   };
 
-  const renderFormFields = () => {
+  const renderFormFields = ({ values }) => {
+    const isEmpty = Object.values(values).every((x) => x === null || x === '');
+
+    if (!isEmpty) {
+      window.localStorage.setItem('productForm', JSON.stringify(values));
+    }
+
     return (
       <Grid container>
         <Grid item md={6} xs={12}>
@@ -236,17 +239,17 @@ const ProductForm = () => {
       {renderBreadcrumbs()}
       <Formik
         initialValues={{
-          id: '',
-          sku: '',
-          name: '',
-          description: '',
-          price: '',
-          width: '',
-          weight: '',
-          length: '',
-          height: '',
-          category: '',
-          image: '',
+          id: get(productFormData, 'id', ''),
+          sku: get(productFormData, 'sku', ''),
+          name: get(productFormData, 'name', ''),
+          description: get(productFormData, 'description', ''),
+          price: get(productFormData, 'price', ''),
+          width: get(productFormData, 'width', ''),
+          weight: get(productFormData, 'weight', ''),
+          length: get(productFormData, 'length', ''),
+          height: get(productFormData, 'height', ''),
+          category: get(productFormData, 'category', {}),
+          image: get(productFormData, 'image', ''),
         }}
         validateOnChange
         onSubmit={async (values, { setSubmitting }) => {
@@ -275,7 +278,9 @@ const ProductForm = () => {
         validationSchema={Yup.object().shape({
           name: Yup.string().required('Name must be filled!'),
           sku: Yup.string().required('SKU must be filled!'),
-          category: Yup.object().required('category must be filled!'),
+          category: Yup.object()
+            .required('category must be filled!')
+            .nullable(),
           price: Yup.number()
             .min(1, 'Must be more than 0')
             .required('Weight must be filled!'),
@@ -293,12 +298,14 @@ const ProductForm = () => {
             .max(100, 'Must be under or equal 100')
             .required('Weight must be filled!'),
         })}
-        component={({ handleSubmit }) => {
+        component={({ handleSubmit, setFieldValue, values }) => {
           return (
             <form onSubmit={handleSubmit} autoComplete='off' noValidate>
               <Card sx={styles.root}>
                 <CardHeader style={styles.header} title='Product Create' />
-                <CardContent>{renderFormFields()}</CardContent>
+                <CardContent>
+                  {renderFormFields({ setFieldValue, values })}
+                </CardContent>
                 <Divider />
                 <CardActions>
                   {renderButtonSubmit()}
