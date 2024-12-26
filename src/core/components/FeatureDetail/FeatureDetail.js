@@ -114,7 +114,7 @@ const FeatureDetail = ({ title, row, renderFunctions, headers }) => {
   const renderTableDetailValue = (header) => {
     return (
       <TableRow key={header.displayName}>
-        <TableCell>{header.displayName}</TableCell>
+        <TableCell style={{ width: '20%' }}>{header.displayName}</TableCell>
         <TableCell>
           {renderFunctions && renderFunctions[header.key]
             ? renderFunctions[header.key](row)
@@ -140,7 +140,7 @@ const FeatureDetail = ({ title, row, renderFunctions, headers }) => {
 
   const renderButtonCancel = () => {
     return (
-      <Button sx={styles.buttonCancel} component={LinkRouter} to='/products'>
+      <Button sx={styles.buttonCancel} component={LinkRouter} to='/machines'>
         Cancel
       </Button>
     );

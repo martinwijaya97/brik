@@ -90,13 +90,14 @@ const FormikInputField = ({
           onChange={(event) => {
             handleOnChange(event);
           }}
+          style={{ margin: 0 }}
           error={isError}
           type={type}
           rows={rows}
           multiline={multiline}
         />
       </FormControl>
-      {renderMessage()}
+      {/* {renderMessage()} */}
     </Box>
   );
 };

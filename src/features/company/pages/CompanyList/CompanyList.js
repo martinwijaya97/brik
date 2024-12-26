@@ -15,7 +15,7 @@ import SearchInput from '../../../../core/components/SearchInput';
 
 // import useDebounce from '../../../../core/hooks/useDebounce';
 
-import { ProductAction } from '../../../../redux/actions/ProductAction';
+// import { CompanyAction } from '../../../../redux/actions/CompanyAction';
 
 import Theme from '../../../../core/theme';
 
@@ -37,7 +37,34 @@ const useStyles = () => {
   return styles;
 };
 
-const ProductList = () => {
+const companyList = [
+  {
+    company_code: '1720',
+    company_name: 'CPI - Cikande',
+    created_by: 'agus',
+    created_at: '2024-12-02',
+    updated_by: '',
+    updated_at: '',
+  },
+  {
+    company_code: '1840',
+    company_name: 'CPI - Berbek',
+    created_by: 'agus',
+    created_at: '2024-12-02',
+    updated_by: '',
+    updated_at: '',
+  },
+  {
+    company_code: '1880',
+    company_name: 'CPI - Salatiga',
+    created_by: 'agus',
+    created_at: '2024-12-02',
+    updated_by: '',
+    updated_at: '',
+  },
+];
+
+const CompanyList = () => {
   const styles = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -53,18 +80,18 @@ const ProductList = () => {
     setLoading(true);
     const loadData = async () => {
       try {
-        const response = await dispatch(
-          ProductAction.getProducts({
-            page,
-            rowsPerPage,
-            searchQuery: debounceSearchQuery,
-          })
-        );
+        // const response = await dispatch(
+        //   CompanyAction.getCompanies({
+        //     page,
+        //     rowsPerPage,
+        //     searchQuery: debounceSearchQuery,
+        //   })
+        // );
 
-        if (response) {
-          setRows(response?.products);
-          setTotalItems(response?.total);
-        }
+        // if (response) {
+        setRows(companyList);
+        setTotalItems(companyList.length);
+        // }
 
         setLoading(false);
       } catch (error) {
@@ -102,29 +129,28 @@ const ProductList = () => {
           />
         }
         right={
-          <Button
-            component={Link}
-            sx={styles.buttonCreate}
-            to='/products/create'
-          >
-            Create Product
+          <Button component={Link} sx={styles.buttonCreate} to='/machines/create'>
+            Create Company
           </Button>
         }
       />
 
       <FeatureTable
-        title='Product List'
+        title='Company List'
         rows={rows}
         rowKey='id'
         isLoading={loading}
         headers={[
-          { displayName: 'Name', key: 'name' },
-          { displayName: 'SKU', key: 'sku' },
-          { displayName: 'Category Name', key: 'categoryName' },
-          { displayName: 'price', key: 'price', type: 'rupiah' },
-          { displayName: 'Image', key: 'image', type: 'image' },
+          { displayName: 'Id', key: 'id' },
+          { displayName: 'Code', key: 'company_code' },
+          { displayName: 'Name', key: 'company_name' },
         ]}
-        rowOnClick={(row) => history.push(`/products/${row._id}`)}
+        rowOnClick={(row) => history.push(`/machines/${row.machine_id}`)}
+        renderFunctions={{
+          id: (row, index) => {
+            return index + 1;
+          },
+        }}
         totalItems={totalItems}
         rowsPerPage={rowsPerPage}
         page={page}
@@ -137,4 +163,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default CompanyList;

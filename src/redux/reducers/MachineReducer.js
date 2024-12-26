@@ -1,14 +1,14 @@
 const defaultState = {
-  products: JSON.parse(window.localStorage.getItem('products')) || [],
+  machines: JSON.parse(window.localStorage.getItem('machines')) || [],
 };
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
     case 'SET_PRODUCT':
-      window.localStorage.setItem('products', JSON.stringify(action.data));
+      window.localStorage.setItem('machines', JSON.stringify(action.data));
       return {
         ...state,
-        products: action.data,
+        machines: action.data,
       };
 
     default:

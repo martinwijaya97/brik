@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import product from './ProductReducer';
+import machine from './MachineReducer';
 import snackbar from './SnackbarReducer';
 
 const rootReducer = combineReducers({
-  product,
+  machine,
   snackbar,
 });
 

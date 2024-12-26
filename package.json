@@ -1,5 +1,5 @@
 {
-  "name": "brik-test",
+  "name": "simone-web-admin",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,6 +8,8 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.10.8",
     "@mui/styles": "^5.10.8",
+    "@nivo/line": "^0.88.0",
+    "@nivo/pie": "^0.88.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

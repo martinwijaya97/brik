@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 
 import Theme from '../../theme';
@@ -15,7 +16,7 @@ const useStyles = () => {
   const theme = Theme();
   const styles = {
     root: {
-      marginBottom: 5,
+      marginBottom: 2,
     },
     formControl: {
       width: '100%',
@@ -38,7 +39,6 @@ const FormikAsyncSelect = ({
   helperText,
   onChangeCustom,
   required,
-  textFieldProps,
   specificErrorMessage,
   placeholder,
 }) => {
@@ -86,6 +86,18 @@ const FormikAsyncSelect = ({
     }
   };
 
+  const handleOnChange = (event, newValue) => {
+    if (multi) {
+      setFieldValue(name, Array.isArray(newValue) ? newValue : []);
+    } else {
+      setFieldValue(name, newValue || null);
+    }
+
+    if (onChangeCustom) {
+      onChangeCustom(newValue);
+    }
+  };
+
   const renderMessage = () => {
     let message = '';
     if (specificErrorMessage) {
@@ -101,52 +113,55 @@ const FormikAsyncSelect = ({
     );
   };
 
+  const renderOptionCostume = (props, option, selected) => {
+    return (
+      <li {...props}>
+        <Checkbox style={{ marginRight: 8 }} checked={selected} />
+        {option.label}
+      </li>
+    );
+  };
+
+  const renderTextField = (textFieldProps) => {
+    return (
+      <TextField
+        helperText={helperText}
+        label={handleLabel()}
+        value={value}
+        error={isError}
+        placeholder={placeholder}
+        fullWidth
+        onChange={(event) => {
+          setOptions([]);
+          setInputValue(event.target.value);
+        }}
+        InputProps={{
+          ...textFieldProps.InputProps,
+          endAdornment: (
+            <React.Fragment>
+              {isLoading ? <CircularProgress color='inherit' size={20} /> : null}
+              {textFieldProps.InputProps.endAdornment}
+            </React.Fragment>
+          ),
+        }}
+        {...textFieldProps}
+      />
+    );
+  };
+
   return (
-    <Box sx={{ marginBottom: 2 }}>
+    <Box sx={styles.root}>
       <FormControl sx={styles.formControl}>
         <Autocomplete
           disableClearable={disableClearable}
           disabled={isDisabled}
-          value={value}
+          value={multi ? value || [] : value || null}
           options={options}
           noOptionsText='Tidak ada hasil.'
-          getOptionLabel={(item) =>
-            typeof item === 'string' ? item : item?.label
-          }
-          renderInput={(textFieldProps) => (
-            <TextField
-              helperText={helperText}
-              label={handleLabel()}
-              value={value}
-              error={isError}
-              placeholder={placeholder}
-              fullWidth
-              onChange={(event) => {
-                setOptions([]);
-                setInputValue(event.target.value);
-              }}
-              InputProps={{
-                ...textFieldProps.InputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {isLoading ? (
-                      <CircularProgress color='inherit' size={20} />
-                    ) : null}
-                    {textFieldProps.InputProps.endAdornment}
-                  </React.Fragment>
-                ),
-              }}
-              {...textFieldProps}
-            />
-          )}
-          onChange={(event, newValue) => {
-            if (typeof setFieldValue === 'function') {
-              setFieldValue(name, newValue);
-            }
-            if (onChangeCustom) {
-              onChangeCustom(newValue);
-            }
-          }}
+          getOptionLabel={(item) => (typeof item === 'string' ? item : item?.label)}
+          renderOption={(props, option, { selected }) => renderOptionCostume(props, option, selected)}
+          renderInput={(textFieldProps) => renderTextField(textFieldProps)}
+          onChange={(event, newValue) => handleOnChange(event, newValue)}
           open={open}
           onOpen={() => {
             setOpen(true);
@@ -157,6 +172,7 @@ const FormikAsyncSelect = ({
           loading={isLoading}
           multiple={multi}
           disableCloseOnSelect={multi}
+          isOptionEqualToValue={(option, val) => option.value === val?.value}
           getOptionSelected={(option, value) => option.value === value.value}
         />
       </FormControl>

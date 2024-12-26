@@ -10,17 +10,24 @@ import Layout from '../layout';
 // import BannerDetailPage from '../../features/banner/pages/BannerDetail';
 // import BannerEditPage from '../../features/banner/pages/BannerEdit';
 
-// //Category
-// import CategoryListPage from '../../features/category/pages/CategoryList';
-// import CategoryCreatePage from '../../features/category/pages/CategoryCreate';
-// import CategoryDetailPage from '../../features/category/pages/CategoryDetail';
-// import CategoryEditPage from '../../features/category/pages/CategoryEdit';
+//Company
+import CompanyListPage from '../../features/company/pages/CompanyList';
+import CompanyCreatePage from '../../features/company/pages/CompanyCreate';
+import CompanyDetailPage from '../../features/company/pages/CompanyDetail';
+import CompanyEditPage from '../../features/company/pages/CompanyEdit';
 
-//Product
-import ProductListPage from '../../features/product/pages/ProductList';
-import ProductCreatePage from '../../features/product/pages/ProductCreate';
-import ProductDetailPage from '../../features/product/pages/ProductDetail';
-import ProductEditPage from '../../features/product/pages/ProductEdit';
+//Plant
+import PlantListPage from '../../features/plant/pages/PlantList';
+import PlantCreatePage from '../../features/plant/pages/PlantCreate';
+import PlantDetailPage from '../../features/plant/pages/PlantDetail';
+import PlantEditPage from '../../features/plant/pages/PlantEdit';
+
+//Machine
+import MachineCreatePage from '../../features/machine/pages/MachineCreate';
+import MachineDetailPage from '../../features/machine/pages/MachineDetail';
+import MachineEditPage from '../../features/machine/pages/MachineEdit';
+import MachineListPage from '../../features/machine/pages/MachineList';
+import DashboardPage from '../../features/dashboard';
 
 // //Subcategory
 // import SubcategoryListPage from '../../features/subcategory/pages/SubcategoryList';
@@ -46,33 +53,28 @@ import ProductEditPage from '../../features/product/pages/ProductEdit';
 const Routers = () => {
   return (
     <Switch>
-      <Redirect exact from='/' to='/products' />
+      <Redirect exact from='/' to='/dashboard' />
 
-      {/* Product */}
-      <RouteWithLayout
-        layout={Layout}
-        exact
-        path='/products'
-        component={ProductListPage}
-      />
-      <RouteWithLayout
-        layout={Layout}
-        exact
-        path='/products/create'
-        component={ProductCreatePage}
-      />
-      <RouteWithLayout
-        layout={Layout}
-        exact
-        path='/products/:id'
-        component={ProductDetailPage}
-      />
-      <RouteWithLayout
-        layout={Layout}
-        exact
-        path='/products/:id/edit'
-        component={ProductEditPage}
-      />
+      {/* Dashboard */}
+      <RouteWithLayout layout={Layout} exact path='/dashboard' component={DashboardPage} />
+
+      {/* Company */}
+      <RouteWithLayout layout={Layout} exact path='/companies' component={CompanyListPage} />
+      <RouteWithLayout layout={Layout} exact path='/companies/create' component={CompanyCreatePage} />
+      <RouteWithLayout layout={Layout} exact path='/companies/:id' component={CompanyDetailPage} />
+      <RouteWithLayout layout={Layout} exact path='/companies/:id/edit' component={CompanyEditPage} />
+
+      {/* Plant */}
+      <RouteWithLayout layout={Layout} exact path='/plants' component={PlantListPage} />
+      <RouteWithLayout layout={Layout} exact path='/plants/create' component={PlantCreatePage} />
+      <RouteWithLayout layout={Layout} exact path='/plants/:id' component={PlantDetailPage} />
+      <RouteWithLayout layout={Layout} exact path='/plants/:id/edit' component={PlantEditPage} />
+
+      {/* Machine */}
+      <RouteWithLayout layout={Layout} exact path='/machines' component={MachineListPage} />
+      <RouteWithLayout layout={Layout} exact path='/machines/create' component={MachineCreatePage} />
+      <RouteWithLayout layout={Layout} exact path='/machines/:id' component={MachineDetailPage} />
+      <RouteWithLayout layout={Layout} exact path='/machines/:id/edit' component={MachineEditPage} />
 
       {/* <RouteWithoutLayout exact path='/sign-in' component={SignInPage} /> */}
     </Switch>

@@ -46,25 +46,29 @@ const Sidebar = ({ open, handleClose }) => {
   const renderListItem = ({ title, path }) => {
     const isActive = location.pathname.includes(path);
 
-    const styleText = isActive
-      ? styles.textListItemActive
-      : styles.textListItemStandBy;
+    const styleText = isActive ? styles.textListItemActive : styles.textListItemStandBy;
 
     return (
-      <ListItem button sx={styles.wrapListItem}>
-        <ListItemText
-          onClick={() => {
-            history.push(path);
-          }}
-          primary={<Typography sx={styleText}>{title}</Typography>}
-        />
+      <ListItem
+        button
+        sx={styles.wrapListItem}
+        onClick={() => {
+          history.push(path);
+        }}
+      >
+        <ListItemText primary={<Typography sx={styleText}>{title}</Typography>} />
       </ListItem>
     );
   };
 
   const renderList = () => {
     return (
-      <List>{renderListItem({ path: '/products', title: 'Product' })}</List>
+      <List>
+        {renderListItem({ path: '/dashboard', title: 'Dashboard' })}
+        {renderListItem({ path: '/companies', title: 'Company' })}
+        {renderListItem({ path: '/plants', title: 'Plant' })}
+        {renderListItem({ path: '/machines', title: 'Machine' })}
+      </List>
     );
   };
 

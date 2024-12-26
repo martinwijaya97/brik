@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid';
 import FormikInputField from '../../../core/components/FormikInputField';
 import FormikUploadFile from '../../../core/components/FormikUploadFile';
 
-import { ProductAction } from '../../../redux/actions/ProductAction';
+// import { CompanyAction } from '../../../redux/actions/CompanyAction';
 
 import Theme from '../../../core/theme';
 import FormikAsyncSelect from '../../../core/components/FormikAsyncSelect';
@@ -62,13 +62,12 @@ const useStyles = () => {
   return styles;
 };
 
-const ProductForm = () => {
+const CompanyForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const styles = useStyles();
   const [isLoading, setIsLoading] = useState(false);
-  const productFormData =
-    JSON.parse(window.localStorage.getItem('productForm')) || {};
+  const machineFormData = JSON.parse(window.localStorage.getItem('machineForm')) || {};
 
   const loadCategoryOptions = async () => {
     const response = [
@@ -87,40 +86,36 @@ const ProductForm = () => {
     return options;
   };
 
-  const createFunction = async (variables) => {
-    const result = await dispatch(
-      ProductAction.createProduct({ ...variables })
-    );
+  // const createFunction = async (variables) => {
+  //   const result = await dispatch(CompanyAction.createCompany({ ...variables }));
 
-    if (result) {
-      window.localStorage.setItem('productForm', JSON.stringify({}));
-      history.push('/products');
-    }
-  };
+  //   if (result) {
+  //     window.localStorage.setItem('machineForm', JSON.stringify({}));
+  //     history.push('/machines');
+  //   }
+  // };
 
-  const uploadImage = async (values) => {
-    const result = await dispatch(
-      ProductAction.productUploadImage({ file: values[0] })
-    );
-    return result;
-  };
+  // const uploadImage = async (values) => {
+  //   const result = await dispatch(CompanyAction.machineUploadImage({ file: values[0] }));
+  //   return result;
+  // };
 
-  const checkImage = async (values) => {
-    if (values) {
-      if (typeof values !== 'string') {
-        const image = await uploadImage(values);
-        return image;
-      } else {
-        return values;
-      }
-    }
-  };
+  // const checkImage = async (values) => {
+  //   if (values) {
+  //     if (typeof values !== 'string') {
+  //       const image = await uploadImage(values);
+  //       return image;
+  //     } else {
+  //       return values;
+  //     }
+  //   }
+  // };
 
   const renderBreadcrumbs = () => {
     return (
       <Breadcrumbs aria-label='breadcrumb'>
-        <Link component={LinkRouter} color='inherit' to='/products'>
-          Product
+        <Link component={LinkRouter} color='inherit' to='/machines'>
+          Company
         </Link>
         <Typography color='textPrimary'> Create </Typography>
       </Breadcrumbs>
@@ -137,7 +132,7 @@ const ProductForm = () => {
 
   const renderButtonCancel = () => {
     return (
-      <Button sx={styles.buttonCancel} component={LinkRouter} to='/products'>
+      <Button sx={styles.buttonCancel} component={LinkRouter} to='/machines'>
         Cancel
       </Button>
     );
@@ -147,19 +142,13 @@ const ProductForm = () => {
     const isEmpty = Object.values(values).every((x) => x === null || x === '');
 
     if (!isEmpty) {
-      window.localStorage.setItem('productForm', JSON.stringify(values));
+      window.localStorage.setItem('machineForm', JSON.stringify(values));
     }
 
     return (
       <Grid container>
         <Grid item md={6} xs={12}>
-          <FastField
-            name='name'
-            label='Name'
-            placeholder='Name'
-            component={FormikInputField}
-            required
-          />
+          <FastField name='name' label='Name' placeholder='Name' component={FormikInputField} required />
           <FastField
             name='sku'
             label='SKU'
@@ -168,12 +157,7 @@ const ProductForm = () => {
             component={FormikInputField}
             required
           />
-          <FastField
-            name='description'
-            label='Description'
-            placeholder='Description'
-            component={FormikInputField}
-          />
+          <FastField name='description' label='Description' placeholder='Description' component={FormikInputField} />
           <Field
             name='category'
             label='Category'
@@ -222,13 +206,7 @@ const ProductForm = () => {
             component={FormikInputField}
             required
           />
-          <Field
-            name='image'
-            required
-            label='Image'
-            component={FormikUploadFile}
-            acceptedFileType='image/*'
-          />
+          <Field name='image' required label='Image' component={FormikUploadFile} acceptedFileType='image/*' />
         </Grid>
       </Grid>
     );
@@ -239,17 +217,17 @@ const ProductForm = () => {
       {renderBreadcrumbs()}
       <Formik
         initialValues={{
-          id: get(productFormData, 'id', ''),
-          sku: get(productFormData, 'sku', ''),
-          name: get(productFormData, 'name', ''),
-          description: get(productFormData, 'description', ''),
-          price: get(productFormData, 'price', ''),
-          width: get(productFormData, 'width', ''),
-          weight: get(productFormData, 'weight', ''),
-          length: get(productFormData, 'length', ''),
-          height: get(productFormData, 'height', ''),
-          category: get(productFormData, 'category', ''),
-          image: get(productFormData, 'image', ''),
+          id: get(machineFormData, 'id', ''),
+          sku: get(machineFormData, 'sku', ''),
+          name: get(machineFormData, 'name', ''),
+          description: get(machineFormData, 'description', ''),
+          price: get(machineFormData, 'price', ''),
+          width: get(machineFormData, 'width', ''),
+          weight: get(machineFormData, 'weight', ''),
+          length: get(machineFormData, 'length', ''),
+          height: get(machineFormData, 'height', ''),
+          category: get(machineFormData, 'category', ''),
+          image: get(machineFormData, 'image', ''),
         }}
         validateOnChange
         onSubmit={async (values, { setSubmitting }) => {
@@ -262,15 +240,15 @@ const ProductForm = () => {
             }
           });
 
-          const image = await checkImage(values.image);
+          // const image = await checkImage(values.image);
           const variables = {
             ...values,
-            image,
+            // image,
             categoryId: values.category.value,
             categoryName: values.category.label,
           };
 
-          await createFunction(variables);
+          // await createFunction(variables);
 
           setIsLoading(false);
           setSubmitting(false);
@@ -278,21 +256,11 @@ const ProductForm = () => {
         validationSchema={Yup.object().shape({
           name: Yup.string().required('Name must be filled!'),
           sku: Yup.string().required('SKU must be filled!'),
-          category: Yup.object()
-            .required('category must be filled!')
-            .nullable(),
-          price: Yup.number()
-            .min(1, 'Must be more than 0')
-            .required('Weight must be filled!'),
-          width: Yup.number()
-            .min(1, 'Must be more than 0')
-            .required('Weight must be filled!'),
-          length: Yup.number()
-            .min(1, 'Must be more than 0')
-            .required('Weight must be filled!'),
-          height: Yup.number()
-            .min(1, 'Must be more than 0')
-            .required('Weight must be filled!'),
+          category: Yup.object().required('category must be filled!').nullable(),
+          price: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
+          width: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
+          length: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
+          height: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
           weight: Yup.number()
             .min(1, 'Must be more than 0')
             .max(100, 'Must be under or equal 100')
@@ -302,10 +270,8 @@ const ProductForm = () => {
           return (
             <form onSubmit={handleSubmit} autoComplete='off' noValidate>
               <Card sx={styles.root}>
-                <CardHeader style={styles.header} title='Product Create' />
-                <CardContent>
-                  {renderFormFields({ setFieldValue, values })}
-                </CardContent>
+                <CardHeader style={styles.header} title='Company Create' />
+                <CardContent>{renderFormFields({ setFieldValue, values })}</CardContent>
                 <Divider />
                 <CardActions>
                   {renderButtonSubmit()}
@@ -320,4 +286,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default CompanyForm;

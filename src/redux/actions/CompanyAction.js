@@ -1,4 +1,3 @@
-import axios from 'axios';
 import config from '../../config';
 
 import { SnackbarAction } from './SnackbarAction';
@@ -12,14 +11,14 @@ const handleSnackbar = ({ message, dispatch, type }) => {
   );
 };
 
-const handleProductSearch = ({ data, searchQuery }) => {
+const handleMachineSearch = ({ data, searchQuery }) => {
   if (searchQuery) {
     return data.filter((value) => value.name.includes(searchQuery));
   }
   return data;
 };
 
-const handleGroupProduct = ({ data, rowsPerPage, page }) => {
+const handleGroupMachine = ({ data, rowsPerPage, page }) => {
   if (!rowsPerPage && !page) {
     return data;
   }
@@ -55,21 +54,21 @@ function setData({ data, type }) {
   };
 }
 
-function getProducts({ rowsPerPage, page, searchQuery }) {
+function getMachines({ rowsPerPage, page, searchQuery }) {
   return async (dispatch) => {
     try {
       const data = await config.get().then(({ data }) => data);
-      const products = handleProductSearch({ data, searchQuery });
-      const productPagination = handleGroupProduct({
-        data: products,
+      const machines = handleMachineSearch({ data, searchQuery });
+      const machinePagination = handleGroupMachine({
+        data: machines,
         rowsPerPage,
         page,
         searchQuery,
       });
 
       const response = {
-        products: productPagination,
-        total: products.length,
+        machines: machinePagination,
+        total: machines.length,
       };
 
       if (response) {
@@ -78,7 +77,7 @@ function getProducts({ rowsPerPage, page, searchQuery }) {
       }
     } catch (error) {
       handleSnackbar({
-        message: 'Get Product Failed!',
+        message: 'Get Machine Failed!',
         dispatch,
         type: 'error',
       });
@@ -87,20 +86,18 @@ function getProducts({ rowsPerPage, page, searchQuery }) {
   };
 }
 
-function getProductDetail({ id }) {
+function getMachineDetail({ id }) {
   return async (dispatch) => {
     try {
-      const response = JSON.parse(window.localStorage.getItem('products'));
-      const productFind = response?.products?.find(
-        (product) => product._id === id
-      );
+      const response = JSON.parse(window.localStorage.getItem('machines'));
+      const machineFind = response?.machines?.find((machine) => machine._id === id);
 
-      if (!!productFind) {
-        return productFind;
+      if (!!machineFind) {
+        return machineFind;
       }
     } catch (error) {
       handleSnackbar({
-        message: 'Get Product Detail Failed!',
+        message: 'Get Machine Detail Failed!',
         dispatch,
         type: 'error',
       });
@@ -109,39 +106,21 @@ function getProductDetail({ id }) {
   };
 }
 
-function createProduct({
-  categoryId,
-  categoryName,
-  sku,
-  name,
-  description,
-  weight,
-  width,
-  length,
-  height,
-  price,
-  image,
-}) {
+function createMachine({ machineCode, machineName, machineType, subInstrumentCode, image }) {
   return async (dispatch) => {
     try {
       const payload = {
-        categoryId,
-        categoryName,
-        sku,
-        name,
-        description,
-        weight,
-        width,
-        length,
-        height,
-        price,
+        machineCode,
+        machineName,
+        machineType,
+        subInstrumentCode,
         image,
       };
 
       const response = await config.post('/', payload).then(({ data }) => data);
       if (!!response) {
         handleSnackbar({
-          message: 'Create Product Success!',
+          message: 'Create Machine Success!',
           dispatch,
           type: 'success',
         });
@@ -149,7 +128,7 @@ function createProduct({
       }
     } catch (error) {
       handleSnackbar({
-        message: 'Create Product Failed!',
+        message: 'Create Machine Failed!',
         dispatch,
         type: 'error',
       });
@@ -158,30 +137,42 @@ function createProduct({
   };
 }
 
-function productUploadImage({ file }) {
-  var formData = new FormData();
-  formData.append('file', file);
-  formData.append('folder', 'product');
-  const url = 'http://api.yamsi.online/api/v1/internal/upload';
-
-  return async () => {
+function updateMachine({ id, machineCode, machineName, machineType, subInstrumentCode, image }) {
+  return async (dispatch) => {
     try {
-      const result = await axios.post(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return result.data.path;
+      const payload = {
+        id,
+        machineCode,
+        machineName,
+        machineType,
+        subInstrumentCode,
+        image,
+      };
+
+      const response = await config.post('/', payload).then(({ data }) => data);
+      if (!!response) {
+        handleSnackbar({
+          message: 'Create Machine Success!',
+          dispatch,
+          type: 'success',
+        });
+        return response;
+      }
     } catch (error) {
+      handleSnackbar({
+        message: 'Create Machine Failed!',
+        dispatch,
+        type: 'error',
+      });
       return null;
     }
   };
 }
 
-export const ProductAction = {
+export const MachineAction = {
   setData,
-  getProducts,
-  getProductDetail,
-  createProduct,
-  productUploadImage,
+  getMachines,
+  getMachineDetail,
+  createMachine,
+  updateMachine,
 };

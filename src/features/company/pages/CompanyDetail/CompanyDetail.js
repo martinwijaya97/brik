@@ -8,18 +8,46 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 
 import FeatureDetail from '../../../../core/components/FeatureDetail';
-import { ProductAction } from '../../../../redux/actions/ProductAction';
+// import { CompanyAction } from '../../../../redux/actions/CompanyAction';
 
-const ProductDetail = () => {
+const data = [
+  {
+    machine_id: 1,
+    machine_code: 'M1',
+    machine_name: 'AHE-192 (M1)',
+    machine_type: 'AHE-192',
+    sub_instrument_code: 'CMP',
+  },
+  {
+    machine_id: 2,
+    machine_code: 'M2',
+    machine_name: 'GTE-394 (M2)',
+    machine_type: 'GTE-394',
+    sub_instrument_code: 'CMP',
+  },
+  {
+    machine_id: 3,
+    machine_code: 'M3',
+    machine_name: 'YFV-738 (M3)',
+    machine_type: 'YFV-738',
+    sub_instrument_code: 'CMP',
+  },
+];
+
+const CompanyDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [product, setProduct] = useState({});
+  const [machine, setCompany] = useState({});
 
   useEffect(() => {
     const loadData = async () => {
-      const response = await dispatch(ProductAction.getProductDetail({ id }));
+      // const response = await dispatch(CompanyAction.getCompanyDetail({ id }));
+      const response = data.find((row) => row.machine_id === id);
+
+      console.log('MARITN', data);
+
       if (!!response) {
-        setProduct(response);
+        setCompany(response);
       }
     };
     loadData();
@@ -28,8 +56,8 @@ const ProductDetail = () => {
   const renderBreadcrumbs = () => {
     return (
       <Breadcrumbs aria-label='breadcrumb'>
-        <Link component={LinkRouter} color='inherit' to='/products'>
-          Product
+        <Link component={LinkRouter} color='inherit' to='/machines'>
+          Company
         </Link>
         <Typography color='textPrimary'>{id}</Typography>
       </Breadcrumbs>
@@ -55,24 +83,13 @@ const ProductDetail = () => {
       {renderBreadcrumbs()}
       <Box sx={{ flex: 1, marginTop: 2 }}>
         <FeatureDetail
-          title='Product Detail'
-          row={product}
+          title='Company Detail'
+          row={machine}
           headers={[
-            { displayName: 'ID', key: '_id' },
-            { displayName: 'SKU', key: 'sku' },
-            { displayName: 'Name', key: 'name' },
-            { displayName: 'Price', key: 'price' },
-            { displayName: 'Category', key: 'category' },
-            { displayName: 'Description', key: 'description' },
-            { displayName: 'Weight', key: 'weight' },
-            { displayName: 'Width', key: 'width' },
-            { displayName: 'Length', key: 'length' },
-            { displayName: 'Height', key: 'height' },
-            {
-              displayName: 'Image',
-              key: 'image',
-              type: 'image',
-            },
+            { displayName: 'ID', key: 'machine_id' },
+            { displayName: 'Name', key: 'machine_name' },
+            { displayName: 'Type', key: 'machine_type' },
+            { displayName: 'sub_instrument', key: 'sub_instrument_code' },
           ]}
           renderFunctions={{
             category: (row) => {
@@ -85,4 +102,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default CompanyDetail;

@@ -65,7 +65,7 @@ const Topbar = ({ handleOpenSidebar }) => {
           {renderMenuIcon()}
         </Grid>
         <Grid item xs={6}>
-          <Typography sx={styles.textTitle}>Brik</Typography>
+          <Typography sx={styles.textTitle}>simone</Typography>
         </Grid>
         <Grid item xs />
       </Grid>
