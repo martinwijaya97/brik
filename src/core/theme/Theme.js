@@ -1,6 +1,6 @@
 const Theme = () => {
   const colors = {
-    header: '#00BECD',
+    header: '#088dd0',
 
     footer: '',
 
@@ -13,12 +13,12 @@ const Theme = () => {
     textPrimary: '#000000',
     textSecondary: '#FFFFFF',
     textTertiary: '#B7B7B7',
-    textQuaternary: '#00BECD',
+    textQuaternary: '#088dd0',
 
     semanticError: '#CE1111',
     semanticSuccess: '#5CD523',
 
-    brandPrimary: '#00BECD',
+    brandPrimary: '#088dd0',
     brandSecondary: '#FFFFFF',
     brandTertiary: '#0E8A94',
 
@@ -27,7 +27,7 @@ const Theme = () => {
     greyScale3: '#D6D6D6',
     greyScale4: '#F9F9F9',
 
-    buttonActive: '#00BECD',
+    buttonActive: '#088dd0',
     buttonStandBy: '#FFFFFF',
     buttonDisabled: '#B7B7B7',
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link as LinkRouter } from 'react-router-dom';
+import { useParams, Link as LinkRouter, useLocation } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
@@ -8,8 +8,6 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 
 import FeatureDetail from '../../../../core/components/FeatureDetail';
-import { MachineAction } from '../../../../redux/actions/MachineAction';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom';
 
 const MachineDetail = () => {
   const location = useLocation();

@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { ResponsiveLine } from '@nivo/line';
 
 const ChartLinear = ({ data, style }) => {
-  console.log('DATA', data);
   return (
     <Box sx={style}>
       <ResponsiveLine

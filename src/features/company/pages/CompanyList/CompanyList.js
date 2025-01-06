@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-
-import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -13,11 +11,9 @@ import FeatureTable from '../../../../core/components/FeatureTable';
 import FeatureHeader from '../../../../core/components/FeatureHeader';
 import SearchInput from '../../../../core/components/SearchInput';
 
-// import useDebounce from '../../../../core/hooks/useDebounce';
-
-// import { CompanyAction } from '../../../../redux/actions/CompanyAction';
-
 import Theme from '../../../../core/theme';
+import { useQuery } from '@apollo/client';
+import { COMPANY_LIST } from '../../services/queries';
 
 const useStyles = () => {
   const theme = Theme();
@@ -25,6 +21,7 @@ const useStyles = () => {
     buttonCreate: {
       paddingX: 2,
       border: 1,
+      marginLeft: 4,
       backgroundColor: theme.colors.buttonActive,
       borderColor: theme.colors.buttonActive,
       textTransform: 'none',
@@ -37,38 +34,9 @@ const useStyles = () => {
   return styles;
 };
 
-const companyList = [
-  {
-    company_code: '1720',
-    company_name: 'CPI - Cikande',
-    created_by: 'agus',
-    created_at: '2024-12-02',
-    updated_by: '',
-    updated_at: '',
-  },
-  {
-    company_code: '1840',
-    company_name: 'CPI - Berbek',
-    created_by: 'agus',
-    created_at: '2024-12-02',
-    updated_by: '',
-    updated_at: '',
-  },
-  {
-    company_code: '1880',
-    company_name: 'CPI - Salatiga',
-    created_by: 'agus',
-    created_at: '2024-12-02',
-    updated_by: '',
-    updated_at: '',
-  },
-];
-
 const CompanyList = () => {
   const styles = useStyles();
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -76,31 +44,24 @@ const CompanyList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const debounceSearchQuery = useDebounce(searchQuery, 500);
 
+  const { data, loading } = useQuery(COMPANY_LIST, {
+    variables: {
+      page,
+      pageSize: rowsPerPage,
+      searchQuery: debounceSearchQuery,
+      // sortByDirection,
+      // sortByColumnName,
+    },
+  });
+
   const loadData = useCallback(() => {
-    setLoading(true);
     const loadData = async () => {
-      try {
-        // const response = await dispatch(
-        //   CompanyAction.getCompanies({
-        //     page,
-        //     rowsPerPage,
-        //     searchQuery: debounceSearchQuery,
-        //   })
-        // );
-
-        // if (response) {
-        setRows(companyList);
-        setTotalItems(companyList.length);
-        // }
-
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
+      setRows(data?.companyList?.companies);
+      setTotalItems(data?.companyList?.meta?.totalItems);
     };
 
     loadData();
-  }, [dispatch, page, rowsPerPage, debounceSearchQuery]);
+  }, [data]);
 
   useEffect(() => {
     loadData();
@@ -129,7 +90,7 @@ const CompanyList = () => {
           />
         }
         right={
-          <Button component={Link} sx={styles.buttonCreate} to='/machines/create'>
+          <Button component={Link} sx={styles.buttonCreate} to='/companies/create'>
             Create Company
           </Button>
         }
@@ -137,17 +98,17 @@ const CompanyList = () => {
 
       <FeatureTable
         title='Company List'
-        rows={rows}
-        rowKey='id'
+        rows={data?.companyList?.companies}
+        rowKey='number'
         isLoading={loading}
         headers={[
-          { displayName: 'Id', key: 'id' },
-          { displayName: 'Code', key: 'company_code' },
-          { displayName: 'Name', key: 'company_name' },
+          { displayName: 'No', key: 'number' },
+          { displayName: 'Code', key: 'code' },
+          { displayName: 'Name', key: 'name' },
         ]}
-        rowOnClick={(row) => history.push(`/machines/${row.machine_id}`)}
+        rowOnClick={(row) => navigate(`/companies/${row.id}`)}
         renderFunctions={{
-          id: (row, index) => {
+          number: (row, index) => {
             return index + 1;
           },
         }}

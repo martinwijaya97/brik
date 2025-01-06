@@ -1,83 +1,66 @@
 import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
-
+import { Routes, Route, Navigate } from 'react-router-dom';
+// Import Layout and Route Wrappers
+import RouteWithoutLayout from '../components/RouteWithoutLayout';
 import RouteWithLayout from '../components/RouteWithLayout';
 import Layout from '../layout';
 
-// //Banner
-// import BannerListPage from '../../features/banner/pages/BannerList';
-// import BannerCreatePage from '../../features/banner/pages/BannerCreate';
-// import BannerDetailPage from '../../features/banner/pages/BannerDetail';
-// import BannerEditPage from '../../features/banner/pages/BannerEdit';
-
-//Company
+// Company Pages
 import CompanyListPage from '../../features/company/pages/CompanyList';
 import CompanyCreatePage from '../../features/company/pages/CompanyCreate';
 import CompanyDetailPage from '../../features/company/pages/CompanyDetail';
 import CompanyEditPage from '../../features/company/pages/CompanyEdit';
 
-//Plant
+// Plant Pages
 import PlantListPage from '../../features/plant/pages/PlantList';
 import PlantCreatePage from '../../features/plant/pages/PlantCreate';
 import PlantDetailPage from '../../features/plant/pages/PlantDetail';
 import PlantEditPage from '../../features/plant/pages/PlantEdit';
 
-//Machine
+// Machine Pages
 import MachineCreatePage from '../../features/machine/pages/MachineCreate';
 import MachineDetailPage from '../../features/machine/pages/MachineDetail';
 import MachineEditPage from '../../features/machine/pages/MachineEdit';
 import MachineListPage from '../../features/machine/pages/MachineList';
+
+// Dashboard & Authentication
 import DashboardPage from '../../features/dashboard';
-
-// //Subcategory
-// import SubcategoryListPage from '../../features/subcategory/pages/SubcategoryList';
-// import SubcategoryCreatePage from '../../features/subcategory/pages/SubcategoryCreate';
-// import SubcategoryDetailPage from '../../features/subcategory/pages/SubcategoryDetail';
-// import SubcategoryEditPage from '../../features/subcategory/pages/SubcategoryEdit';
-
-// //Collection
-// import CollectionListPage from '../../features/collection/pages/CollectionList';
-// import CollectionCreatePage from '../../features/collection/pages/CollectionCreate';
-// import CollectionDetailPage from '../../features/collection/pages/CollectionDetail';
-// import CollectionEditPage from '../../features/collection/pages/CollectionEdit';
-
-// //Portfolio
-// import PortfolioListPage from '../../features/portfolio/pages/PortfolioList';
-// import PortfolioCreatePage from '../../features/portfolio/pages/PortfolioCreate';
-// import PortfolioDetailPage from '../../features/portfolio/pages/PortfolioDetail';
-// import PortfolioEditPage from '../../features/portfolio/pages/PortfolioEdit';
-
-// //Sign In
-// import SignInPage from '../../features/auth/pages/SignIn';
+import SignIn from '../../features/auth/pages/SignIn';
 
 const Routers = () => {
   return (
-    <Switch>
-      <Redirect exact from='/' to='/dashboard' />
+    <Routes>
+      {/* Redirect to /dashboard if the path is '/' */}
+      <Route path='/' element={<Navigate to='/dashboard' />} />
 
-      {/* Dashboard */}
-      <RouteWithLayout layout={Layout} exact path='/dashboard' component={DashboardPage} />
+      {/* Dashboard Route */}
 
-      {/* Company */}
-      <RouteWithLayout layout={Layout} exact path='/companies' component={CompanyListPage} />
-      <RouteWithLayout layout={Layout} exact path='/companies/create' component={CompanyCreatePage} />
-      <RouteWithLayout layout={Layout} exact path='/companies/:id' component={CompanyDetailPage} />
-      <RouteWithLayout layout={Layout} exact path='/companies/:id/edit' component={CompanyEditPage} />
+      {/* <RouteWithLayout path='/dashboard' layout={Layout} component={DashboardPage} /> */}
 
-      {/* Plant */}
-      <RouteWithLayout layout={Layout} exact path='/plants' component={PlantListPage} />
-      <RouteWithLayout layout={Layout} exact path='/plants/create' component={PlantCreatePage} />
-      <RouteWithLayout layout={Layout} exact path='/plants/:id' component={PlantDetailPage} />
-      <RouteWithLayout layout={Layout} exact path='/plants/:id/edit' component={PlantEditPage} />
+      <Route path='/dashboard' element={<RouteWithLayout layout={Layout} component={DashboardPage} />} />
 
-      {/* Machine */}
-      <RouteWithLayout layout={Layout} exact path='/machines' component={MachineListPage} />
-      <RouteWithLayout layout={Layout} exact path='/machines/create' component={MachineCreatePage} />
-      <RouteWithLayout layout={Layout} exact path='/machines/:id' component={MachineDetailPage} />
-      <RouteWithLayout layout={Layout} exact path='/machines/:id/edit' component={MachineEditPage} />
+      {/* Company Routes */}
+      <Route path='/companies' element={<RouteWithLayout layout={Layout} component={CompanyListPage} />} />
+      <Route path='/companies/create' element={<RouteWithLayout layout={Layout} component={CompanyCreatePage} />} />
+      <Route path='/companies/:id' element={<RouteWithLayout layout={Layout} component={CompanyDetailPage} />} />
+      <Route path='/companies/:id/edit' element={<RouteWithLayout layout={Layout} component={CompanyEditPage} />} />
 
-      {/* <RouteWithoutLayout exact path='/sign-in' component={SignInPage} /> */}
-    </Switch>
+      {/* Plant Routes */}
+      <Route path='/plants' element={<RouteWithLayout layout={Layout} component={PlantListPage} />} />
+      <Route path='/plants/create' element={<RouteWithLayout layout={Layout} component={PlantCreatePage} />} />
+      <Route path='/plants/:id' element={<RouteWithLayout layout={Layout} component={PlantDetailPage} />} />
+      <Route path='/plants/:id/edit' element={<RouteWithLayout layout={Layout} component={PlantEditPage} />} />
+
+      {/* Machine Routes */}
+      <Route path='/machines' element={<RouteWithLayout layout={Layout} component={MachineListPage} />} />
+      <Route path='/machines/create' element={<RouteWithLayout layout={Layout} component={MachineCreatePage} />} />
+      <Route path='/machines/:id' element={<RouteWithLayout layout={Layout} component={MachineDetailPage} />} />
+      <Route path='/machines/:id/edit' element={<RouteWithLayout layout={Layout} component={MachineEditPage} />} />
+
+      {/* Sign In Route */}
+      <Route path='/sign-in' element={<RouteWithoutLayout component={SignIn} />} />
+    </Routes>
   );
 };
+
 export default Routers;

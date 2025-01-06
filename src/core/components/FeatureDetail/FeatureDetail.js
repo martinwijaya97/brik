@@ -49,7 +49,7 @@ const useStyles = () => {
   return styles;
 };
 
-const FeatureDetail = ({ title, row, renderFunctions, headers }) => {
+const FeatureDetail = ({ title, row, renderFunctions, headers, renderFooters }) => {
   const styles = useStyles();
 
   const renderDisplayDataRupiah = (data) => {
@@ -138,20 +138,12 @@ const FeatureDetail = ({ title, row, renderFunctions, headers }) => {
     );
   };
 
-  const renderButtonCancel = () => {
-    return (
-      <Button sx={styles.buttonCancel} component={LinkRouter} to='/machines'>
-        Cancel
-      </Button>
-    );
-  };
-
   return (
     <Card sx={styles.root}>
       <CardHeader sx={styles.header} title={title} />
       <Divider />
       <CardContent>{renderTableDetail()}</CardContent>
-      <CardActions>{renderButtonCancel()}</CardActions>
+      <CardActions>{renderFooters}</CardActions>
     </Card>
   );
 };

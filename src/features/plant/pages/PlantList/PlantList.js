@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 
@@ -106,7 +106,7 @@ const plantList = [
 
 const PlantList = () => {
   const styles = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
@@ -187,7 +187,7 @@ const PlantList = () => {
           { displayName: 'Company', key: 'company_name' },
           { displayName: 'Address', key: 'plant_address' },
         ]}
-        rowOnClick={(row) => history.push(`/plants/${row.plant_code}`, { plant: row })}
+        rowOnClick={(row) => navigate(`/plants/${row.plant_code}`, { plant: row })}
         renderFunctions={{
           ID: (row, index) => {
             return index + 1;

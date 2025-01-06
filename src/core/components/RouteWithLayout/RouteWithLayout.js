@@ -1,18 +1,26 @@
+import { Box } from '@mui/material';
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-const RouteWithLayout = (props) => {
-  const { permission, layout: Layout, component: Component, ...rest } = props;
+// RouteWithLayout component should accept props: layout (Layout component) and component (Component to render)
+const RouteWithLayout = ({ layout: Layout, component: Component, ...rest }) => {
+  // return (
+  //   <Route
+  //     {...rest} // Spread any other props like path, exact, etc.
+  //     element={
+  //       <Layout>
+  //         <Component />
+  //       </Layout>
+  //     }
+  //   />
+  // );
 
   return (
-    <Route
-      {...rest}
-      render={(matchProps) => (
-        <Layout>
-          <Component {...matchProps} />
-        </Layout>
-      )}
-    />
+    <Box>
+      <Layout>
+        <Component />
+      </Layout>
+    </Box>
   );
 };
 

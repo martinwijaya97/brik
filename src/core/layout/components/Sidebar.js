@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHistory, useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -40,7 +40,7 @@ const useStyles = () => {
 const Sidebar = ({ open, handleClose }) => {
   const styles = useStyles();
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMobile = isMobileDevice();
 
   const renderListItem = ({ title, path }) => {
@@ -53,7 +53,7 @@ const Sidebar = ({ open, handleClose }) => {
         button
         sx={styles.wrapListItem}
         onClick={() => {
-          history.push(path);
+          navigate(path);
         }}
       >
         <ListItemText primary={<Typography sx={styleText}>{title}</Typography>} />

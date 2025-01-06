@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link as LinkRouter, useHistory, useLocation } from 'react-router-dom';
+import { useParams, Link as LinkRouter, useNavigate, useLocation } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
@@ -14,7 +14,7 @@ import MachineList from '../../../machine/pages/MachineList/MachineList';
 
 const PlantDetail = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { plant } = location.state || {};
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ const PlantDetail = () => {
         // <Typography
         //   style={{ color: '#1E90FF', textDecoration: 'underline' }}
         //   onClick={() => {
-        //     history.push(`/plants/${row.plant_code}`, { plant: row });
+        //     navigate(`/plants/${row.plant_code}`, { plant: row });
         //   }}
         // >
         //   • {row?.machine_name} - {row?.sub_instrument_code}
@@ -77,7 +77,7 @@ const PlantDetail = () => {
         <Typography
           style={{ color: '#1E90FF', textDecoration: 'underline', cursor: 'pointer' }}
           onClick={() => {
-            history.push(`/machines/${row.machine_code}`, { machine: row });
+            navigate(`/machines/${row.machine_code}`, { machine: row });
           }}
         >
           • {row?.machine_name} - {row?.sub_instrument_code}

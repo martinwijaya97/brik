@@ -10,8 +10,6 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import { SnackbarAction } from '../../../redux/actions/SnackbarAction';
-
 import Theme from '../../theme';
 
 const useStyles = () => {
@@ -55,7 +53,7 @@ const AppSnackbar = () => {
   }, [snackbar]);
 
   const handleClose = async () => {
-    await dispatch(SnackbarAction.closeSnackbar());
+    // await dispatch(SnackbarAction.closeSnackbar());
   };
 
   const handleStyles = (type) => {

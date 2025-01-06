@@ -1,62 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link as LinkRouter } from 'react-router-dom';
+import React from 'react';
+import { useParams, Link as LinkRouter, useNavigate } from 'react-router-dom';
+import { List as ReactContentLoaderList } from 'react-content-loader';
 
-import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 
 import FeatureDetail from '../../../../core/components/FeatureDetail';
-// import { CompanyAction } from '../../../../redux/actions/CompanyAction';
-
-const data = [
-  {
-    machine_id: 1,
-    machine_code: 'M1',
-    machine_name: 'AHE-192 (M1)',
-    machine_type: 'AHE-192',
-    sub_instrument_code: 'CMP',
-  },
-  {
-    machine_id: 2,
-    machine_code: 'M2',
-    machine_name: 'GTE-394 (M2)',
-    machine_type: 'GTE-394',
-    sub_instrument_code: 'CMP',
-  },
-  {
-    machine_id: 3,
-    machine_code: 'M3',
-    machine_name: 'YFV-738 (M3)',
-    machine_type: 'YFV-738',
-    sub_instrument_code: 'CMP',
-  },
-];
+import { useQuery } from '@apollo/client';
+import { COMPANY_DETAIL } from '../../services/queries';
+import { Button } from '@mui/material';
 
 const CompanyDetail = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const [machine, setCompany] = useState({});
 
-  useEffect(() => {
-    const loadData = async () => {
-      // const response = await dispatch(CompanyAction.getCompanyDetail({ id }));
-      const response = data.find((row) => row.machine_id === id);
-
-      console.log('MARITN', data);
-
-      if (!!response) {
-        setCompany(response);
-      }
-    };
-    loadData();
-  }, [id, dispatch]);
+  const { data, loading, error } = useQuery(COMPANY_DETAIL, {
+    variables: { id },
+  });
 
   const renderBreadcrumbs = () => {
     return (
       <Breadcrumbs aria-label='breadcrumb'>
-        <Link component={LinkRouter} color='inherit' to='/machines'>
+        <Link component={LinkRouter} color='inherit' to='/companies'>
           Company
         </Link>
         <Typography color='textPrimary'>{id}</Typography>
@@ -64,13 +30,8 @@ const CompanyDetail = () => {
     );
   };
 
-  const renderCategoryText = (row) => {
-    return (
-      <Typography>
-        {row?.categoryId}. {row?.categoryName}
-      </Typography>
-    );
-  };
+  if (loading) return <ReactContentLoaderList />;
+  if (error) return <Typography>Something went wrong.</Typography>;
 
   return (
     <Box
@@ -84,18 +45,46 @@ const CompanyDetail = () => {
       <Box sx={{ flex: 1, marginTop: 2 }}>
         <FeatureDetail
           title='Company Detail'
-          row={machine}
+          row={data?.companyDetail}
           headers={[
-            { displayName: 'ID', key: 'machine_id' },
-            { displayName: 'Name', key: 'machine_name' },
-            { displayName: 'Type', key: 'machine_type' },
-            { displayName: 'sub_instrument', key: 'sub_instrument_code' },
+            { displayName: 'ID', key: 'id' },
+            { displayName: 'Code', key: 'code' },
+            { displayName: 'Name', key: 'name' },
           ]}
-          renderFunctions={{
-            category: (row) => {
-              return renderCategoryText(row);
-            },
-          }}
+          renderFooters={
+            <div>
+              <Button
+                color='primary'
+                variant='contained'
+                component={LinkRouter}
+                to={`/companies/${id}/edit`}
+                state={{ companyDetail: data.companyDetail }}
+              >
+                Edit Company
+              </Button>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={() => {
+                  // settingsActions.showDialog({
+                  //   dialogTitle: 'Hapus Banner',
+                  //   dialogMessage: 'Apakah Anda yakin?',
+                  //   dialogConfirmFunction: () => {
+                  //     deleteFunction({
+                  //       variables: {
+                  //         id,
+                  //       },
+                  //     }).catch((err) => {
+                  //       settingsActions.showErrorMessage(err.message);
+                  //     });
+                  //   },
+                  // });
+                }}
+              >
+                Delete Banner
+              </Button>
+            </div>
+          }
         />
       </Box>
     </Box>

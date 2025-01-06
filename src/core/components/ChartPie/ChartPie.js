@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { ResponsivePie } from '@nivo/pie';
 
 const ChartPie = ({ data, style }) => {
-  console.log('DATA', data);
   return (
     <Box sx={style}>
       <ResponsivePie

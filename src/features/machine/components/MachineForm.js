@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Formik, FastField, Field } from 'formik';
 import get from 'lodash/get';
 import * as Yup from 'yup';
-import { Link as LinkRouter, useHistory } from 'react-router-dom';
+import { Link as LinkRouter, useNavigate } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
 
 import Typography from '@mui/material/Typography';
@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid';
 import FormikInputField from '../../../core/components/FormikInputField';
 import FormikUploadFile from '../../../core/components/FormikUploadFile';
 
-import { MachineAction } from '../../../redux/actions/MachineAction';
+// import { MachineAction } from '../../../redux/actions/MachineAction';
 
 import Theme from '../../../core/theme';
 import FormikAsyncSelect from '../../../core/components/FormikAsyncSelect';
@@ -124,7 +124,7 @@ const roomList = [
 
 const MachineForm = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const styles = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const machineFormData = JSON.parse(window.localStorage.getItem('machineForm')) || {};
@@ -189,17 +189,16 @@ const MachineForm = () => {
   };
 
   const createFunction = async (variables) => {
-    const result = await dispatch(MachineAction.createMachine({ ...variables }));
-
-    if (result) {
-      window.localStorage.setItem('machineForm', JSON.stringify({}));
-      history.push('/machines');
-    }
+    // const result = await dispatch(MachineAction.createMachine({ ...variables }));
+    // if (result) {
+    //   window.localStorage.setItem('machineForm', JSON.stringify({}));
+    //   navigate('/machines');
+    // }
   };
 
   const uploadImage = async (values) => {
-    const result = await dispatch(MachineAction.machineUploadImage({ file: values[0] }));
-    return result;
+    // const result = await dispatch(MachineAction.machineUploadImage({ file: values[0] }));
+    // return result;
   };
 
   const checkImage = async (values) => {

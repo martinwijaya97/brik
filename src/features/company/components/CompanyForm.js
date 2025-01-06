@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Formik, FastField, Field } from 'formik';
+import React from 'react';
+import { Formik, FastField } from 'formik';
 import get from 'lodash/get';
 import * as Yup from 'yup';
-import { Link as LinkRouter, useHistory } from 'react-router-dom';
+import { Link as LinkRouter, useNavigate } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
 
 import Typography from '@mui/material/Typography';
@@ -18,12 +17,11 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 
 import FormikInputField from '../../../core/components/FormikInputField';
-import FormikUploadFile from '../../../core/components/FormikUploadFile';
-
-// import { CompanyAction } from '../../../redux/actions/CompanyAction';
 
 import Theme from '../../../core/theme';
-import FormikAsyncSelect from '../../../core/components/FormikAsyncSelect';
+import { useMutation } from '@apollo/client';
+import { COMPANY_CREATE, COMPANY_UPDATE } from '../services/mutations';
+import { COMPANY_LIST } from '../services/queries';
 
 const useStyles = () => {
   const theme = Theme();
@@ -62,177 +60,109 @@ const useStyles = () => {
   return styles;
 };
 
-const CompanyForm = () => {
-  const dispatch = useDispatch();
-  const history = useHistory();
+const CompanyForm = ({ id, isCreate, company }) => {
+  const navigate = useNavigate();
   const styles = useStyles();
-  const [isLoading, setIsLoading] = useState(false);
-  const machineFormData = JSON.parse(window.localStorage.getItem('machineForm')) || {};
 
-  const loadCategoryOptions = async () => {
-    const response = [
-      { id: 1, name: 'makanan' },
-      { id: 2, name: 'minuman' },
-      { id: 3, name: 'cemilan' },
-    ];
+  const companyFormData = isCreate ? JSON.parse(window.localStorage.getItem('companyForm')) : company;
 
-    const options = response.map((category) => {
-      return {
-        label: category.name,
-        value: category.id,
-      };
-    });
+  const [createFunction, { loading: creating }] = useMutation(COMPANY_CREATE, {
+    onError(error) {},
+    onCompleted() {
+      alert('Company Created');
+      window.localStorage.removeItem('companyForm');
+      navigate('/companies');
+    },
+    refetchQueries: () => [
+      {
+        query: COMPANY_LIST,
+        variables: {
+          page: 0,
+          pageSize: 10,
+          searchQuery: '',
+        },
+      },
+    ],
+  });
 
-    return options;
-  };
-
-  // const createFunction = async (variables) => {
-  //   const result = await dispatch(CompanyAction.createCompany({ ...variables }));
-
-  //   if (result) {
-  //     window.localStorage.setItem('machineForm', JSON.stringify({}));
-  //     history.push('/machines');
-  //   }
-  // };
-
-  // const uploadImage = async (values) => {
-  //   const result = await dispatch(CompanyAction.machineUploadImage({ file: values[0] }));
-  //   return result;
-  // };
-
-  // const checkImage = async (values) => {
-  //   if (values) {
-  //     if (typeof values !== 'string') {
-  //       const image = await uploadImage(values);
-  //       return image;
-  //     } else {
-  //       return values;
-  //     }
-  //   }
-  // };
+  const [updateFunction, { loading: updating }] = useMutation(COMPANY_UPDATE, {
+    onError(error) {},
+    onCompleted() {
+      window.localStorage.removeItem('companyForm');
+      navigate('/companies/' + id);
+      alert('Company Updated');
+    },
+  });
 
   const renderBreadcrumbs = () => {
-    return (
-      <Breadcrumbs aria-label='breadcrumb'>
-        <Link component={LinkRouter} color='inherit' to='/machines'>
-          Company
-        </Link>
-        <Typography color='textPrimary'> Create </Typography>
-      </Breadcrumbs>
-    );
+    if (!isCreate) {
+      return (
+        <Breadcrumbs aria-label='breadcrumb'>
+          <Link component={LinkRouter} color='inherit' to='/companies'>
+            Company
+          </Link>
+          <Link component={LinkRouter} color='inherit' to={`/companies/${id}`}>
+            {id}
+          </Link>
+          <Typography color='textPrimary'>Edit</Typography>
+        </Breadcrumbs>
+      );
+    }
   };
 
   const renderButtonSubmit = () => {
+    const textButton = isCreate ? 'Create' : 'Update';
     return (
       <Button type='submit' sx={styles.buttonSubmit}>
-        Create
+        {textButton}
       </Button>
     );
   };
 
   const renderButtonCancel = () => {
     return (
-      <Button sx={styles.buttonCancel} component={LinkRouter} to='/machines'>
+      <Button
+        sx={styles.buttonCancel}
+        component={LinkRouter}
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
         Cancel
       </Button>
     );
   };
 
   const renderFormFields = ({ values }) => {
-    const isEmpty = Object.values(values).every((x) => x === null || x === '');
-
-    if (!isEmpty) {
-      window.localStorage.setItem('machineForm', JSON.stringify(values));
-    }
-
     return (
       <Grid container>
         <Grid item md={6} xs={12}>
-          <FastField name='name' label='Name' placeholder='Name' component={FormikInputField} required />
           <FastField
-            name='sku'
-            label='SKU'
-            placeholder='SKU'
+            name='code'
+            label='Code'
+            placeholder='Code'
             helperText='*Combination alphabet and numeric'
             component={FormikInputField}
             required
           />
-          <FastField name='description' label='Description' placeholder='Description' component={FormikInputField} />
-          <Field
-            name='category'
-            label='Category'
-            loadOptions={loadCategoryOptions}
-            component={FormikAsyncSelect}
-            required
-          />
-          <FastField
-            name='price'
-            label='Price'
-            type='number'
-            placeholder='Price'
-            component={FormikInputField}
-            required
-          />
-          <FastField
-            name='weight'
-            label='Weight'
-            placeholder='Weight'
-            helperText='*Must be under or equal 100'
-            type='number'
-            component={FormikInputField}
-            required
-          />
-          <FastField
-            name='width'
-            label='Width'
-            placeholder='Width'
-            type='number'
-            component={FormikInputField}
-            required
-          />
-          <FastField
-            name='length'
-            label='Length'
-            placeholder='Length'
-            type='number'
-            component={FormikInputField}
-            required
-          />
-          <FastField
-            name='height'
-            label='Height'
-            placeholder='Height'
-            type='number'
-            component={FormikInputField}
-            required
-          />
-          <Field name='image' required label='Image' component={FormikUploadFile} acceptedFileType='image/*' />
+          <FastField name='name' label='Name' placeholder='Name' component={FormikInputField} required />
         </Grid>
       </Grid>
     );
   };
 
   return (
-    <LoadingOverlay active={isLoading} spinner text='Loading...'>
+    <LoadingOverlay active={creating || updating} spinner text='Loading...'>
       {renderBreadcrumbs()}
       <Formik
         initialValues={{
-          id: get(machineFormData, 'id', ''),
-          sku: get(machineFormData, 'sku', ''),
-          name: get(machineFormData, 'name', ''),
-          description: get(machineFormData, 'description', ''),
-          price: get(machineFormData, 'price', ''),
-          width: get(machineFormData, 'width', ''),
-          weight: get(machineFormData, 'weight', ''),
-          length: get(machineFormData, 'length', ''),
-          height: get(machineFormData, 'height', ''),
-          category: get(machineFormData, 'category', ''),
-          image: get(machineFormData, 'image', ''),
+          id: get(companyFormData, 'id', ''),
+          code: get(companyFormData, 'code', ''),
+          name: get(companyFormData, 'name', ''),
         }}
         validateOnChange
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          setIsLoading(true);
 
           Object.keys(values).forEach((key) => {
             if (values[key] === null || values[key] === '') {
@@ -240,37 +170,35 @@ const CompanyForm = () => {
             }
           });
 
-          // const image = await checkImage(values.image);
+          const isEmpty = Object.values(values).every((x) => x === null || x === '');
+
+          if (!isEmpty) {
+            window.localStorage.setItem('companyForm', JSON.stringify(values));
+          }
+
           const variables = {
             ...values,
-            // image,
-            categoryId: values.category.value,
-            categoryName: values.category.label,
           };
 
-          // await createFunction(variables);
+          if (isCreate) {
+            createFunction({ variables });
+          } else {
+            updateFunction({ variables });
+          }
 
-          setIsLoading(false);
           setSubmitting(false);
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string().required('Name must be filled!'),
-          sku: Yup.string().required('SKU must be filled!'),
-          category: Yup.object().required('category must be filled!').nullable(),
-          price: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
-          width: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
-          length: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
-          height: Yup.number().min(1, 'Must be more than 0').required('Weight must be filled!'),
-          weight: Yup.number()
-            .min(1, 'Must be more than 0')
-            .max(100, 'Must be under or equal 100')
-            .required('Weight must be filled!'),
+          code: Yup.string().required('Code must be filled!'),
         })}
         component={({ handleSubmit, setFieldValue, values }) => {
+          const title = isCreate ? 'Company Create' : 'Company Update';
+
           return (
             <form onSubmit={handleSubmit} autoComplete='off' noValidate>
               <Card sx={styles.root}>
-                <CardHeader style={styles.header} title='Company Create' />
+                <CardHeader style={styles.header} title={title} />
                 <CardContent>{renderFormFields({ setFieldValue, values })}</CardContent>
                 <Divider />
                 <CardActions>

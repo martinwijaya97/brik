@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -183,8 +183,8 @@ const machineList = [
 
 const MachineList = () => {
   const styles = useStyles();
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -217,7 +217,7 @@ const MachineList = () => {
     };
 
     loadData();
-  }, [dispatch, page, rowsPerPage, debounceSearchQuery]);
+  }, [page, rowsPerPage, debounceSearchQuery]);
 
   useEffect(() => {
     loadData();
@@ -288,7 +288,7 @@ const MachineList = () => {
           { displayName: 'sub_instrument', key: 'sub_instrument_code' },
           { displayName: 'Status', key: 'status' },
         ]}
-        rowOnClick={(row) => history.push(`/machines/${row.machine_id}`, { machine: row })}
+        rowOnClick={(row) => navigate(`/machines/${row.machine_id}`, { machine: row })}
         renderFunctions={{
           ID: (row, index) => {
             return index + 1;
