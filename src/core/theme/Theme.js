@@ -28,6 +28,7 @@ const Theme = () => {
     greyScale4: '#F9F9F9',
 
     buttonActive: '#088dd0',
+    buttonDelete: '#de3b40',
     buttonStandBy: '#FFFFFF',
     buttonDisabled: '#B7B7B7',
 

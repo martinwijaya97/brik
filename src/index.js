@@ -18,6 +18,7 @@ import SignIn from '../src/features/auth/pages/SignIn';
 import './index.css';
 import getFirstValidationErrorMessage from './core/utils/getFirstValidationErrorMessage';
 import useGlobal from './globalStore';
+import AppSnackbar from './core/components/AppSnackbar/AppSnackbar';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -54,12 +55,14 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     const logoutErrors = ['SESSION_EXPIRED', 'INVALID_TOKEN', 'NOT_AUTHENTICATED', 'session expired'];
 
     shouldLogout = graphQLErrors.some(({ message }) => {
-      alert(message);
+      // settingActions.showErrorMessage(message);
       return logoutErrors.some((error) => message.toLowerCase().includes(error.toLowerCase()));
     });
 
     const firstErrorJoiValidationServer = getFirstValidationErrorMessage(graphQLErrors);
-    // showErrorMessageFunction(firstErrorJoiValidationServer);
+
+    console.log(firstErrorJoiValidationServer);
+    showErrorMessageFunction(firstErrorJoiValidationServer);
 
     if (shouldLogout) {
       logoutFunction();
@@ -70,7 +73,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (networkError.statusCode === 401) {
       logoutFunction();
     } else {
-      // showErrorMessageFunction(networkError.message);
+      showErrorMessageFunction(networkError.message);
     }
   }
 });
@@ -126,22 +129,41 @@ export const gqlClient = new ApolloClient({
 
 function IsLoggedIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [state] = useGlobal(); //
-  const token = state.auth.token;
 
   const [authState, authActions] = useGlobal(
     (state) => state.auth,
     (actions) => actions.auth
   );
+
+  const [_, settingActions] = useGlobal(
+    (state) => state.settings,
+    (actions) => actions.settings
+  );
+
+  const token = authState?.token;
   logoutFunction = () => {
     authActions.clearAuthCache();
+  };
+
+  showErrorMessageFunction = (message) => {
+    settingActions.showErrorMessage(message);
   };
 
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
 
-  return isLoggedIn ? <App /> : <SignIn />;
+  return isLoggedIn ? (
+    <>
+      <AppSnackbar />
+      <App />
+    </>
+  ) : (
+    <>
+      <AppSnackbar />
+      <SignIn />
+    </>
+  );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

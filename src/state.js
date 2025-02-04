@@ -1,5 +1,9 @@
 import auth from './features/auth/services/state';
-import user from './features/user/services/state';
+import settings from './features/setting/services/state';
 
-// Export states
-export default { auth };
+const initialState = {
+  auth,
+  settings,
+};
+
+export default initialState;

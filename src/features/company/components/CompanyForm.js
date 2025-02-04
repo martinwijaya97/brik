@@ -22,6 +22,7 @@ import Theme from '../../../core/theme';
 import { useMutation } from '@apollo/client';
 import { COMPANY_CREATE, COMPANY_UPDATE } from '../services/mutations';
 import { COMPANY_LIST } from '../services/queries';
+import useGlobal from '../../../globalStore';
 
 const useStyles = () => {
   const theme = Theme();
@@ -64,33 +65,25 @@ const CompanyForm = ({ id, isCreate, company }) => {
   const navigate = useNavigate();
   const styles = useStyles();
 
+  const [, settingActions] = useGlobal(null, (actions) => actions.settings);
+
   const companyFormData = isCreate ? JSON.parse(window.localStorage.getItem('companyForm')) : company;
 
   const [createFunction, { loading: creating }] = useMutation(COMPANY_CREATE, {
     onError(error) {},
     onCompleted() {
-      alert('Company Created');
+      settingActions.showSuccessMessage('Company Created!');
       window.localStorage.removeItem('companyForm');
       navigate('/companies');
     },
-    refetchQueries: () => [
-      {
-        query: COMPANY_LIST,
-        variables: {
-          page: 0,
-          pageSize: 10,
-          searchQuery: '',
-        },
-      },
-    ],
   });
 
   const [updateFunction, { loading: updating }] = useMutation(COMPANY_UPDATE, {
     onError(error) {},
     onCompleted() {
+      settingActions.showSuccessMessage('Company Updated!');
       window.localStorage.removeItem('companyForm');
       navigate('/companies/' + id);
-      alert('Company Updated');
     },
   });
 

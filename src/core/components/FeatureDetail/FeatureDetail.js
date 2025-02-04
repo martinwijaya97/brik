@@ -17,6 +17,7 @@ import DateTime from '../../utils/dateFormatter';
 import Rupiahize from '../../utils/rupiahize';
 
 import Theme from '../../theme';
+import LoadingOverlay from 'react-loading-overlay';
 
 const useStyles = () => {
   const theme = Theme();
@@ -49,7 +50,7 @@ const useStyles = () => {
   return styles;
 };
 
-const FeatureDetail = ({ title, row, renderFunctions, headers, renderFooters }) => {
+const FeatureDetail = ({ title, row, renderFunctions, headers, renderFooters, isLoading }) => {
   const styles = useStyles();
 
   const renderDisplayDataRupiah = (data) => {
@@ -140,10 +141,12 @@ const FeatureDetail = ({ title, row, renderFunctions, headers, renderFooters }) 
 
   return (
     <Card sx={styles.root}>
-      <CardHeader sx={styles.header} title={title} />
-      <Divider />
-      <CardContent>{renderTableDetail()}</CardContent>
-      <CardActions>{renderFooters}</CardActions>
+      <LoadingOverlay active={isLoading} spinner text='Loading...'>
+        <CardHeader sx={styles.header} title={title} />
+        <Divider />
+        <CardContent>{renderTableDetail()}</CardContent>
+        <CardActions>{renderFooters}</CardActions>
+      </LoadingOverlay>
     </Card>
   );
 };

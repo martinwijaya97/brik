@@ -12,8 +12,13 @@ import FeatureHeader from '../../../../core/components/FeatureHeader';
 import SearchInput from '../../../../core/components/SearchInput';
 
 import Theme from '../../../../core/theme';
-import { useQuery } from '@apollo/client';
 import { COMPANY_LIST } from '../../services/queries';
+import useURIState from '../../../../core/hooks/useURIState';
+import useSyncUrl from '../../../../core/hooks/useSyncUrl';
+import usePaginatedQuery from '../../../../core/hooks/usePaginatedQuery';
+import FeatureFilterSidebar from '../../../../core/components/FeatureFilterSidebar';
+import { FormControl, MenuItem, Select, Typography } from '@mui/material';
+import FeatureFilterSelectForm from '../../../../core/components/FeatureFilterSidebar/components/FeatureFilterSelectForm';
 
 const useStyles = () => {
   const theme = Theme();
@@ -38,29 +43,55 @@ const CompanyList = () => {
   const styles = useStyles();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const debounceSearchQuery = useDebounce(searchQuery, 500);
 
-  const { data, loading } = useQuery(COMPANY_LIST, {
-    variables: {
-      page,
-      pageSize: rowsPerPage,
-      searchQuery: debounceSearchQuery,
-      // sortByDirection,
-      // sortByColumnName,
-    },
+  const [searchQuery, setSearchQuery] = useURIState({ name: 'searchQuery' });
+  const [page, setPage] = useURIState({
+    name: 'page',
+    defaultValue: 0,
+    isNumber: true,
+  });
+  const [rowsPerPage, setRowsPerPage] = useURIState({
+    name: 'rowsPerPage',
+    defaultValue: 10,
+    isNumber: true,
+  });
+  const [sortByDirection, setSortByDirection] = useURIState({
+    name: 'sortByDirection',
+    defaultValue: 'DESC',
+  });
+  const [sortByColumnName, setSortByColumnName] = useURIState({
+    name: 'sortByColumnName',
+    defaultValue: 'id',
   });
 
-  const loadData = useCallback(() => {
-    const loadData = async () => {
-      setRows(data?.companyList?.companies);
-      setTotalItems(data?.companyList?.meta?.totalItems);
-    };
+  const [filterByStatus, setFilterByStatus] = useURIState({
+    name: 'filterByStatus',
+  });
 
-    loadData();
+  const debounceSearchQuery = useDebounce(searchQuery, 500);
+
+  useSyncUrl({
+    searchQuery,
+    page,
+    rowsPerPage,
+    sortByDirection,
+    sortByColumnName,
+  });
+
+  const { data, loading } = usePaginatedQuery(COMPANY_LIST, {
+    page,
+    pageSize: rowsPerPage,
+    searchQuery: debounceSearchQuery,
+    sortByDirection,
+    sortByColumnName,
+  });
+
+  console.log(sortByDirection, sortByColumnName);
+
+  const loadData = useCallback(() => {
+    setRows(data?.companies);
+    setTotalItems(data?.meta?.totalItems);
   }, [data]);
 
   useEffect(() => {
@@ -74,6 +105,35 @@ const CompanyList = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleSortFunction = (columnName, direction) => {
+    setSortByColumnName(columnName);
+    setSortByDirection(direction);
+  };
+
+  const clearFilters = () => {
+    setPage(0);
+    setFilterByStatus(null);
+  };
+
+  const renderFilterStatus = () => {
+    const list = [
+      { label: 'Active', value: 'active' },
+      { label: 'Inactive', value: 'inactive' },
+    ];
+
+    return (
+      <FeatureFilterSelectForm
+        label='Filter By Status'
+        value={filterByStatus}
+        list={list}
+        onChange={(event) => {
+          setPage(0);
+          setFilterByStatus(event.target.value);
+        }}
+      />
+    );
   };
 
   return (
@@ -90,28 +150,28 @@ const CompanyList = () => {
           />
         }
         right={
-          <Button component={Link} sx={styles.buttonCreate} to='/companies/create'>
-            Create Company
-          </Button>
+          <>
+            <Button component={Link} sx={styles.buttonCreate} to='/companies/create'>
+              Create Company
+            </Button>
+            <FeatureFilterSidebar isFilterActive={!!filterByStatus} onClearFilters={clearFilters}>
+              <div>{renderFilterStatus()}</div>
+            </FeatureFilterSidebar>
+          </>
         }
       />
 
       <FeatureTable
         title='Company List'
-        rows={data?.companyList?.companies}
+        rows={rows}
         rowKey='number'
         isLoading={loading}
         headers={[
-          { displayName: 'No', key: 'number' },
-          { displayName: 'Code', key: 'code' },
-          { displayName: 'Name', key: 'name' },
+          { displayName: 'ID', key: 'id', sortable: true },
+          { displayName: 'Code', key: 'code', sortable: true },
+          { displayName: 'Name', key: 'name', sortable: true },
         ]}
         rowOnClick={(row) => navigate(`/companies/${row.id}`)}
-        renderFunctions={{
-          number: (row, index) => {
-            return index + 1;
-          },
-        }}
         totalItems={totalItems}
         rowsPerPage={rowsPerPage}
         page={page}
@@ -119,6 +179,9 @@ const CompanyList = () => {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 15]}
+        sortFunction={handleSortFunction}
+        sortByDirection={sortByDirection}
+        sortByColumnName={sortByColumnName}
       />
     </Box>
   );

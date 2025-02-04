@@ -113,10 +113,7 @@ const FeatureTable = (props) => {
   };
 
   const handleTableBodyRowOnClick = ({ event, row, index }) => {
-    if (
-      event.target.value !== true &&
-      event.target.getAttribute('name') === 'childCell'
-    ) {
+    if (event.target.value !== true && event.target.getAttribute('name') === 'childCell') {
       rowOnClick && rowOnClick(row, index, event);
     }
   };
@@ -132,9 +129,8 @@ const FeatureTable = (props) => {
       return (
         <TableSortLabel
           active={sortByColumnName === header.key}
-          onClick={() =>
-            sortFunction(header.key, sortByDirection === 'ASC' ? 'DESC' : 'ASC')
-          }
+          direction={sortByDirection.toLowerCase()}
+          onClick={() => sortFunction(header.key, sortByDirection === 'ASC' ? 'DESC' : 'ASC')}
         >
           {header?.displayName}
         </TableSortLabel>

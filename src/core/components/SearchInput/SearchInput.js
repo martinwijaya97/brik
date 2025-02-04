@@ -55,21 +55,21 @@ const useStyles = () => {
   return styles;
 };
 
-const SearchInput = ({ onChange, onClick }) => {
+const SearchInput = ({ onChange, onClick, value }) => {
   const styles = useStyles();
 
-  const [value, setValue] = useState('');
+  const [inputValue, setInputValue] = useState(value);
 
   const handleInput = (event) => {
     if (onChange) {
       onChange(event);
     }
-    setValue(event.target.value);
+    setInputValue(event.target.value);
   };
 
   const handleButtonCLick = () => {
     if (onClick) {
-      onClick(value);
+      onClick(inputValue);
     }
   };
 
@@ -77,6 +77,7 @@ const SearchInput = ({ onChange, onClick }) => {
     return (
       <Input
         sx={styles.input}
+        value={inputValue}
         disableUnderline
         onChange={(event) => {
           handleInput(event);

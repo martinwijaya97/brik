@@ -110,6 +110,7 @@ const SignIn = () => {
               label='Email'
               variant='outlined'
               fullWidth
+              disabled={loading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               sx={styles.inputField}
@@ -119,6 +120,7 @@ const SignIn = () => {
               variant='outlined'
               type='password'
               fullWidth
+              disabled={loading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={styles.inputField}

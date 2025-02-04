@@ -4,6 +4,7 @@ import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import { Box } from '@mui/material';
 import { deviceSize } from '../utils';
+import AppDialog from '../components/AppDialog';
 
 const useStyles = () => {
   const { height } = deviceSize();
@@ -69,6 +70,7 @@ const Main = ({ children }) => {
       <Box style={styles.body}>
         {renderSidebar()}
         {renderFeature()}
+        <AppDialog />
       </Box>
     );
   };

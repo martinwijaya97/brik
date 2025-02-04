@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
@@ -11,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import Theme from '../../theme';
+import useGlobal from '../../../globalStore';
 
 const useStyles = () => {
   const theme = Theme();
@@ -22,6 +22,7 @@ const useStyles = () => {
       justifyContent: 'center',
       borderRadius: 8,
       paddingX: 2,
+      color: theme.colors.textSecondary,
       backgroundColor: theme.colors.semanticSuccess,
     },
     rootError: {
@@ -31,7 +32,14 @@ const useStyles = () => {
       justifyContent: 'center',
       borderRadius: 8,
       paddingX: 2,
+      color: theme.colors.textSecondary,
       backgroundColor: theme.colors.semanticError,
+    },
+    icon: {
+      color: theme.colors.textSecondary,
+    },
+    text: {
+      marginLeft: 1,
     },
   };
   return styles;
@@ -39,21 +47,25 @@ const useStyles = () => {
 
 const AppSnackbar = () => {
   const styles = useStyles();
-  const dispatch = useDispatch();
-  const snackbar = useSelector((state) => state.snackbar?.show);
+
+  const [settingState, settingActions] = useGlobal(
+    (state) => state.settings,
+    (actions) => actions.settings
+  );
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (snackbar?.message) {
+    console.log(settingState);
+    if (settingState?.message) {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [snackbar]);
+  }, [settingState]);
 
   const handleClose = async () => {
-    // await dispatch(SnackbarAction.closeSnackbar());
+    await settingActions.closeSnackbar();
   };
 
   const handleStyles = (type) => {
@@ -63,7 +75,7 @@ const AppSnackbar = () => {
       case 'error':
         return styles.rootError;
       default:
-        return styles.rootSuccessll;
+        return styles.rootSuccess;
     }
   };
   const renderIcon = (type) => {
@@ -78,13 +90,17 @@ const AppSnackbar = () => {
   };
 
   const renderSnackbarValue = () => {
-    if (snackbar?.message) {
+    if (settingState?.message) {
       return (
-        <Box sx={handleStyles(snackbar?.type)}>
-          {renderIcon(snackbar?.type)}
-          <Typography>{snackbar?.message}</Typography>
-          <IconButton>
-            <CloseIcon />
+        <Box sx={handleStyles(settingState?.type)}>
+          {renderIcon(settingState?.type)}
+          <Typography sx={styles.text}>{settingState?.message}</Typography>
+          <IconButton
+            onClick={() => {
+              handleClose();
+            }}
+          >
+            <CloseIcon sx={styles.icon} />
           </IconButton>
         </Box>
       );

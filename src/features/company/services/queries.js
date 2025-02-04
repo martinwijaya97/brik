@@ -1,12 +1,30 @@
 import gql from 'graphql-tag';
 
 export const COMPANY_LIST = gql`
-  query ($page: Int, $pageSize: Int, $searchQuery: String) {
-    companyList(page: $page, pageSize: $pageSize, search: $searchQuery) {
+  query ($page: Int, $pageSize: Int, $searchQuery: String, $sortByColumnName: String!, $sortByDirection: SortOrder!) {
+    companyList(
+      page: $page
+      pageSize: $pageSize
+      search: $searchQuery
+      sort: { columnName: $sortByColumnName, sortOrder: $sortByDirection }
+    ) {
       companies {
         id
         name
         code
+        creator {
+          id
+          username
+        }
+        updater {
+          id
+          username
+        }
+        plants {
+          id
+          code
+          name
+        }
       }
       meta {
         currentPage
@@ -24,6 +42,19 @@ export const COMPANY_DETAIL = gql`
       id
       name
       code
+      creator {
+        id
+        username
+      }
+      updater {
+        id
+        username
+      }
+      plants {
+        id
+        code
+        name
+      }
     }
   }
 `;

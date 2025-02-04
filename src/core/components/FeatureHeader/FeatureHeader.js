@@ -23,6 +23,11 @@ const useStyles = () => {
     },
     right: {
       marginY: '2px',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItem: 'center',
+      gap: 1,
     },
   };
   return styles;
